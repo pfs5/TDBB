@@ -10,6 +10,6 @@ class EngineModule_Level : public EngineModule<EngineModule_Level>, public IEngi
 public:
     using Super::Super;
     
-    virtual _declspec(dllexport) void Init() override;
+    virtual void Init() override;
     virtual void Shutdown() override;
 };

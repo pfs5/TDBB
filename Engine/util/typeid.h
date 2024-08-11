@@ -1,5 +1,7 @@
 #pragma once
 
+#include <regex>
+
 template <typename T>
 struct TypeId
 {

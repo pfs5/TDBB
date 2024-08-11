@@ -22,7 +22,7 @@
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -49,7 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath);</ExecutablePath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)SFML\include;$(SolutionDir)ImGui;$(SolutionDir)Engine</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);$(SolutionDir)ImGui;$(ProjectDir);$(ProjectDir)include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -57,14 +57,15 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Create</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile></PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -72,6 +73,10 @@
       <AdditionalLibraryDirectories>$(SolutionDir)SFML\lib;$(SolutionDir)SFML\lib\Debug</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-network-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalLibraryDirectories>$(ProjectDir)lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-graphics-s-d.lib;sfml-window-s-d.lib;sfml-audio-s-d.lib;sfml-system-s-d.lib;opengl32.lib;freetype.lib;winmm.lib;gdi32.lib;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -94,11 +99,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="application.cpp" />
     <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="engine\engineaccess.cpp" />
+    <ClCompile Include="engine\enginemodules\enginemodule_entity.cpp" />
     <ClCompile Include="engine\enginemodules\enginemodule_level.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="engine\entity\entity.cpp" />
+    <ClCompile Include="engine\entity\entitycomponents\entitycomponent_physics.cpp" />
+    <ClCompile Include="engine\level\level.cpp" />
+    <ClCompile Include="imgui\imguihelpers.cpp" />
     <ClCompile Include="platform\imgui-SFML.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -108,20 +117,33 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="enginesetup.h" />
+    <ClInclude Include="application.h" />
     <ClInclude Include="engine\engine.h" />
     <ClInclude Include="engine\engineaccess.h" />
     <ClInclude Include="engine\enginemodule.h" />
+    <ClInclude Include="engine\enginemodules\enginemodule_entity.h" />
     <ClInclude Include="engine\enginemodules\enginemodule_level.h" />
+    <ClInclude Include="engine\entity\entity.h" />
+    <ClInclude Include="engine\entity\entitycomponent.h" />
+    <ClInclude Include="engine\entity\entitycomponentaccess.h" />
+    <ClInclude Include="engine\entity\entitycomponents\entitycomponent_physics.h" />
+    <ClInclude Include="engine\entity\entitymemory.h" />
+    <ClInclude Include="engine\inspectable.h" />
+    <ClInclude Include="engine\level\level.h" />
+    <ClInclude Include="engine\moduleengineaccess.h" />
     <ClInclude Include="errorhandling\assert.h" />
-    <ClInclude Include="gamesetup.h" />
-    <ClInclude Include="pch.h" />
+    <ClInclude Include="imgui\imguihelpers.h" />
+    <ClInclude Include="math\random.h" />
+    <ClInclude Include="math\vector.h" />
     <ClInclude Include="platform\imgui-SFML.h" />
     <ClInclude Include="platform\imgui-SFML_export.h" />
     <ClInclude Include="rendering\colors.h" />
     <ClInclude Include="util\proxy.h" />
     <ClInclude Include="util\stringutil.h" />
     <ClInclude Include="util\typeid.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="todo.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

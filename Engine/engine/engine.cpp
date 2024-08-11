@@ -1,18 +1,35 @@
-#include "pch.h"
 #include "engine/engine.h"
 
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderTexture.hpp>
 
-#include "enginesetup.h"
 #include "imgui.h"
+#include "inspectable.h"
+#include "level/level.h"
 #include "rendering/colors.h"
+#include "platform/imgui-SFML.h"
 
-void Engine::Init()
+#include <chrono>
+
+Engine::Engine() = default;
+
+void Engine::Init(const EngineSetupParams& params_)
 {
+    _setupParams = params_;
+
+    for (EngineModuleBase* module : _engineModules)
+    {
+        module->SetupModule(this);
+    }
+    
     for (EngineModuleBase* module : _engineModules)
     {
         module->Init();
+    }
+
+    if (params_.StartLevel != nullptr)
+    {
+        params_.StartLevel->SetupLevel();
     }
 }
 
@@ -24,16 +41,37 @@ void Engine::Shutdown()
     }
 }
 
+void Engine::StartEngine()
+{
+    // ptodo - current level
+    if (_setupParams.StartLevel != nullptr)
+    {
+        _setupParams.StartLevel->StartLevel();
+    }
+}
+
+void Engine::StopEngine()
+{
+    // ptodo - current level
+    if (_setupParams.StartLevel != nullptr)
+    {
+        _setupParams.StartLevel->StopLevel();
+    }
+}
+
 void Engine::Update(float deltaSeconds_)
 {
+    UpdateSimulationStats_Update();
+    
     UpdateSimulationRequest();
     UpdateSimulation(deltaSeconds_);
+
+    UpdateModules(deltaSeconds_);
 }
 
 void Engine::Draw()
 {
-    // Render target for game draw
-    static ImVec2 viewportSize { static_cast<float>(WINDOW_SIZE.x), static_cast<float>(WINDOW_SIZE.y) }; // ptodo - game size
+    UpdateSimulationStats_Draw();
 
     // Toolbar
     if (ImGui::Begin("Toolbar"))
@@ -83,11 +121,16 @@ void Engine::Draw()
     if (ImGui::Begin("Engine"))
     {
         // ptodo - to fun
-
+        if (ImGui::CollapsingHeader("Stats:", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::Text("FPS: %.2f", _simulationStats.DrawsPerSecond);
+            ImGui::Text("UPS: %.2f", _simulationStats.UpdatesPerSecond);
+        }
+        
         // Draw module debug
         if (ImGui::CollapsingHeader("Modules:", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            for (const EngineModuleBase* module : _engineModules)
+            for (EngineModuleBase* module : _engineModules)
             {
                 ensure(module != nullptr);
 
@@ -96,7 +139,7 @@ void Engine::Draw()
                 const std::string moduleName = module->GetModuleName();
                 if(ImGui::CollapsingHeader(moduleName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
                 {
-                    module->DrawDebug();
+                    module->DrawEditor();
                 }
 
                 ImGui::Unindent();
@@ -105,11 +148,28 @@ void Engine::Draw()
     }
     ImGui::End();
 
-    // Game win
+    // Window - Inspector
+    if (ImGui::Begin("Inspector"))
+    {
+        if (_currentInspectable != nullptr)
+        {
+            ImGui::Text("Name: %s", _currentInspectable->GetInspectableName());
+            ImGui::Separator();
+            _currentInspectable->DrawInspectable();
+        }
+    }
+    ImGui::End();
 
+    
+    // Game win
     if (ImGui::Begin("Viewport"))
     {
-        _gameRenderTexture.create(viewportSize.x, viewportSize.y);
+        // Render target for game draw
+        static ImVec2 viewportSize { static_cast<float>(_setupParams.GameWindowSize.x), static_cast<float>(_setupParams.GameWindowSize.y) }; // ptodo - game size
+        sf::ContextSettings windowSettings;
+        windowSettings.antialiasingLevel = 1;
+        _gameRenderTexture.create(static_cast<unsigned int>(viewportSize.x), static_cast<unsigned int>(viewportSize.y));
+        _gameRenderTexture.setSmooth(true);
         _gameRenderTexture.clear(sf::Color::Black);
 
         DrawGame();
@@ -120,11 +180,27 @@ void Engine::Draw()
     ImGui::End();
 }
 
+void Engine::UpdateModules(float deltaSeconds_)
+{
+    for (EngineModuleBase* module : _engineModules)
+    {
+        ensure(module != nullptr);
+        module->Update(deltaSeconds_);
+    }
+}
+
+void Engine::DrawModules(sf::RenderTarget& renderTarget_)
+{
+    for (EngineModuleBase* module : _engineModules)
+    {
+        ensure(module != nullptr);
+        module->Draw(renderTarget_);
+    }
+}
+
 void Engine::DrawGame()
 {
-    sf::CircleShape shape {100.f};
-    shape.setFillColor(sf::Color::Yellow);
-    _gameRenderTexture.draw(shape);
+    DrawModules(_gameRenderTexture);
 }
 
 void Engine::UpdateSimulationRequest()
@@ -164,4 +240,40 @@ void Engine::StopSimulation()
 void Engine::UpdateSimulation(float deltaSeconds_)
 {
     _simulationState.SimulationTimeSeconds += deltaSeconds_;
+}
+
+void Engine::UpdateSimulationStats_Update()
+{
+    static const float UPDATE_PERIOD_SECONDS = 1.f;
+    static auto lastCalculationTimestamp = std::chrono::high_resolution_clock::now();
+
+    ++_simulationStats.UpdateCounter;
+    
+    const auto currentTimestamp = std::chrono::high_resolution_clock::now();
+    
+    const auto durationSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(currentTimestamp - lastCalculationTimestamp);
+    if (static_cast<float>(durationSeconds.count()) * 1e-3f > UPDATE_PERIOD_SECONDS)
+    {
+        _simulationStats.UpdatesPerSecond = static_cast<float>(_simulationStats.UpdateCounter) / UPDATE_PERIOD_SECONDS;
+        _simulationStats.UpdateCounter = 0;
+        lastCalculationTimestamp = currentTimestamp;
+    }
+}
+
+void Engine::UpdateSimulationStats_Draw()
+{
+    static const float UPDATE_PERIOD_SECONDS = 1.f;
+    static auto lastCalculationTimestamp = std::chrono::high_resolution_clock::now();
+
+    ++_simulationStats.DrawCounter;
+    
+    const auto currentTimestamp = std::chrono::high_resolution_clock::now();
+    
+    const auto durationSeconds = std::chrono::duration_cast<std::chrono::milliseconds>(currentTimestamp - lastCalculationTimestamp);
+    if (static_cast<float>(durationSeconds.count()) * 1e-3f > UPDATE_PERIOD_SECONDS)
+    {
+        _simulationStats.DrawsPerSecond = static_cast<float>(_simulationStats.DrawCounter) / UPDATE_PERIOD_SECONDS;
+        _simulationStats.DrawCounter = 0;
+        lastCalculationTimestamp = currentTimestamp;
+    }
 }

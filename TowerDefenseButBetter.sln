@@ -6,8 +6,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ImGui", "ImGui\ImGui.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Game", "Game\Game.vcxproj", "{4241BEFA-F22D-40E2-8B48-7A6DB1317B54}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Entry", "Entry\Entry.vcxproj", "{1330099F-A8D8-47F2-958F-CF96E92CABEA}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -26,9 +24,5 @@ Global
 		{4241BEFA-F22D-40E2-8B48-7A6DB1317B54}.Debug|x64.Build.0 = Debug|x64
 		{4241BEFA-F22D-40E2-8B48-7A6DB1317B54}.Release|x64.ActiveCfg = Release|x64
 		{4241BEFA-F22D-40E2-8B48-7A6DB1317B54}.Release|x64.Build.0 = Release|x64
-		{1330099F-A8D8-47F2-958F-CF96E92CABEA}.Debug|x64.ActiveCfg = Debug|x64
-		{1330099F-A8D8-47F2-958F-CF96E92CABEA}.Debug|x64.Build.0 = Debug|x64
-		{1330099F-A8D8-47F2-958F-CF96E92CABEA}.Release|x64.ActiveCfg = Release|x64
-		{1330099F-A8D8-47F2-958F-CF96E92CABEA}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 EndGlobal

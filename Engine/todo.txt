@@ -1,0 +1,3 @@
+﻿-- Create base object class -> UObject
+-- Smart pointers for UObject
+-- Memory management for objects + memory pool
