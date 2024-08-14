@@ -1,14 +1,13 @@
 ﻿#pragma once
 
+#include "engine/inspectable.h"
+#include "entitycomponentaccess.h"
 #include "errorhandling/assert.h"
 #include "math/vector.h"
+#include "util/stringutil.h"
 #include "util/typeid.h"
 
 #include <SFML/System/Vector2.hpp>
-
-#include "entitycomponentaccess.h"
-#include "engine/inspectable.h"
-#include "util/stringutil.h"
 
 class EntityComponentBase;
 
