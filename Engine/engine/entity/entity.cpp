@@ -7,6 +7,8 @@
 #include "imgui.h"
 #include "imgui/imguihelpers.h"
 
+IMPLEMENT_ENTITY(BasicEntity);
+
 void EntityBase::DrawInspectable()
 {
     IInspectable::DrawInspectable();

@@ -4,6 +4,8 @@
 
 #include "imgui.h"
 
+IMPLEMENT_ENTITY_COMPONENT(EntityComponent_Physics);
+
 void EntityComponent_Physics::Update(float deltaSeconds_)
 {
     EntityComponent<EntityComponent_Physics>::Update(deltaSeconds_);

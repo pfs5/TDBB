@@ -11,6 +11,10 @@
 
 #include <chrono>
 
+#include "imgui/imguihelpers.h"
+#include "reflection/baseobject.h"
+#include "util/stringutil.h"
+
 Engine::Engine() = default;
 
 void Engine::Init(const EngineSetupParams& params_)
@@ -160,6 +164,33 @@ void Engine::Draw()
     }
     ImGui::End();
 
+    // ptodo
+    // Window - Classes
+    if (ImGui::Begin("Classes"))
+    {
+        if (ImGui::CollapsingHeader("Registered classes:", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            IMGUI_SCOPED_INDENT();
+
+            for (EObjectCategory category : EObjectCategoryIterable{})
+            {
+                const char* const categoryName = ToString(category);
+                const std::string title = StringFormat("%s:", categoryName);
+                if (ImGui::CollapsingHeader(title.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    IMGUI_SCOPED_INDENT();
+                    
+                    const std::vector<Class>& classes = ObjectRepository::GetClasses(category);
+                    for (size_t classIdx = 0; classIdx < classes.size(); ++classIdx)
+                    {
+                        const Class& c = classes[classIdx];
+                        ImGui::Text("[%02lld] %s", classIdx, c.Name.c_str());
+                    }
+                }
+            }
+        }
+    }
+    ImGui::End();
     
     // Game win
     if (ImGui::Begin("Viewport"))

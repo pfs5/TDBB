@@ -6,6 +6,7 @@
 #include "math/vector.h"
 #include "util/stringutil.h"
 #include "util/typeid.h"
+#include "engine/reflection/baseobject.h"
 
 #include <SFML/System/Vector2.hpp>
 
@@ -16,7 +17,10 @@ namespace sf
     class RenderTarget;
 }
 
-class EntityBase : public IInspectable
+#define IMPLEMENT_ENTITY(Type_) \
+    EntityDefinition<Type_> g_##EntityDefinition##Type_;    
+
+class EntityBase : public BaseObject, public IInspectable
 {
 public:
     EntityBase() = default;
@@ -86,6 +90,17 @@ public:
     // EntityBase
     virtual std::string GetTypeName() const final { return TypeId<CRTP>::GetName(); }
     
+};
+
+template <typename EntityType>
+struct EntityDefinition : public BaseObjectDefinition<EntityType, EObjectCategory::Entity>
+{
+    // ptodo - ensure entities use this definition and not BaseObjectDefinition directly
+    
+    EntityDefinition()
+    {
+        static_assert(std::is_base_of_v<EntityBase, EntityType> && "T must inherit Entity.");
+    }
 };
 
 // Convenience empty entity.

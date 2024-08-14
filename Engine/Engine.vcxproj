@@ -66,6 +66,7 @@
       <PrecompiledHeaderFile></PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -88,8 +89,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile></PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -107,6 +110,7 @@
     <ClCompile Include="engine\entity\entity.cpp" />
     <ClCompile Include="engine\entity\entitycomponents\entitycomponent_physics.cpp" />
     <ClCompile Include="engine\level\level.cpp" />
+    <ClCompile Include="engine\reflection\baseobject.cpp" />
     <ClCompile Include="imgui\imguihelpers.cpp" />
     <ClCompile Include="platform\imgui-SFML.cpp" />
   </ItemGroup>
@@ -131,6 +135,7 @@
     <ClInclude Include="engine\inspectable.h" />
     <ClInclude Include="engine\level\level.h" />
     <ClInclude Include="engine\moduleengineaccess.h" />
+    <ClInclude Include="engine\reflection\baseobject.h" />
     <ClInclude Include="errorhandling\assert.h" />
     <ClInclude Include="imgui\imguihelpers.h" />
     <ClInclude Include="math\random.h" />
@@ -138,6 +143,7 @@
     <ClInclude Include="platform\imgui-SFML.h" />
     <ClInclude Include="platform\imgui-SFML_export.h" />
     <ClInclude Include="rendering\colors.h" />
+    <ClInclude Include="util\enumutil.h" />
     <ClInclude Include="util\proxy.h" />
     <ClInclude Include="util\stringutil.h" />
     <ClInclude Include="util\typeid.h" />

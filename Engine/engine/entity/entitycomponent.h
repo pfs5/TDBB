@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "entitycomponentaccess.h"
+#include "engine/reflection/baseobject.h"
 #include "util/typeid.h"
 
 namespace sf
@@ -8,7 +9,10 @@ namespace sf
     class RenderTarget;
 }
 
-class EntityComponentBase : public IEntityComponentAccess
+#define IMPLEMENT_ENTITY_COMPONENT(Type_) \
+    EntityComponentDefinition<Type_> g_##EntityComponentDefinition##Type_;   
+
+class EntityComponentBase : public BaseObject, public IEntityComponentAccess
 {
     friend class IEntityComponentAccess;
     
@@ -56,4 +60,15 @@ public:
     
     virtual std::string GetTypeName() const final { return TypeId<CRTP>::GetName(); }
 
+};
+
+template <typename ComponentType>
+struct EntityComponentDefinition : public BaseObjectDefinition<ComponentType, EObjectCategory::EntityComponent>
+{
+    // ptodo - ensure entity components use this definition and not BaseObjectDefinition directly
+    
+    EntityComponentDefinition()
+    {
+        static_assert(std::is_base_of_v<EntityComponentBase, ComponentType> && "T must inherit EntityComponent.");
+    }
 };
