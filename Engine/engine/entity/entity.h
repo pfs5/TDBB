@@ -6,7 +6,7 @@
 #include "math/vector.h"
 #include "util/stringutil.h"
 #include "util/typeid.h"
-#include "engine/reflection/baseobject.h"
+#include "engine/object/baseobject.h"
 
 #include <SFML/System/Vector2.hpp>
 
@@ -22,6 +22,8 @@ namespace sf
 
 class EntityBase : public BaseObject, public IInspectable
 {
+    using Super = BaseObject;
+    
 public:
     EntityBase() = default;
     virtual ~EntityBase() = default;
@@ -32,6 +34,10 @@ public:
     virtual const char* GetInspectableName() const override { return _inspectorName.c_str(); }
     virtual void DrawInspectable() override;
 
+    // ISerializable
+    virtual void Serialize(const nlohmann::json& data_) const override;
+    virtual bool Deserialize(const char* fileName_, const nlohmann::json& data_) override;
+    
     void EntityCreated();
     void Update(float deltaSeconds_);
     void Draw(sf::RenderTarget& renderTarget_);

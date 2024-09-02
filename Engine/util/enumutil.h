@@ -56,12 +56,20 @@ struct IterableEnum
 
 #define ENUM_CASE(name_) case name_: return #name_;
 
+/**
+ * Implements an enum with some convenient utilities.
+ *
+ * Example: MAKE_ENUM(EMyEnum, uint8_t, Value1, Value2);
+ * 1/ Creates an enum class EMyEnum : uint8_t with values Value1 and Value2.
+ * 2/ Creates a global ToString function that takes a EMyEnum type and returns a const char*.
+ * 3/ Lets you iterate all values of the enum with for (EMyEnum value : EMyEnumIterable{}).
+ */
 #define MAKE_ENUM(name_, type_, ...)                    \
     enum class name_ : type_ {                          \
         __VA_ARGS__,                                    \
         Count                                           \
     };                                                  \
-    constexpr const char * ToString(name_ value_) {     \
+    constexpr const char* ToString(name_ value_) {     \
         using enum name_;                               \
         switch (value_) {                               \
             FOR_EACH(ENUM_CASE, __VA_ARGS__)            \

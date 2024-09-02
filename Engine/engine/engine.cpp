@@ -12,7 +12,7 @@
 #include <chrono>
 
 #include "imgui/imguihelpers.h"
-#include "reflection/baseobject.h"
+#include "object/baseobject.h"
 #include "util/stringutil.h"
 
 Engine::Engine() = default;
@@ -33,7 +33,7 @@ void Engine::Init(const EngineSetupParams& params_)
 
     if (params_.StartLevel != nullptr)
     {
-        params_.StartLevel->SetupLevel();
+        // params_.StartLevel->SetupLevel();
     }
 }
 
@@ -50,7 +50,7 @@ void Engine::StartEngine()
     // ptodo - current level
     if (_setupParams.StartLevel != nullptr)
     {
-        _setupParams.StartLevel->StartLevel();
+        // _setupParams.StartLevel->StartLevel();
     }
 }
 
@@ -59,7 +59,7 @@ void Engine::StopEngine()
     // ptodo - current level
     if (_setupParams.StartLevel != nullptr)
     {
-        _setupParams.StartLevel->StopLevel();
+        // _setupParams.StartLevel->StopLevel();
     }
 }
 
@@ -184,7 +184,7 @@ void Engine::Draw()
                     for (size_t classIdx = 0; classIdx < classes.size(); ++classIdx)
                     {
                         const Class& c = classes[classIdx];
-                        ImGui::Text("[%02lld] %s", classIdx, c.Name.c_str());
+                        ImGui::Text("[%02lld] %s", classIdx, c.GetName().c_str());
                     }
                 }
             }

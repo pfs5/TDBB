@@ -49,6 +49,7 @@ void EngineModule_Entity::DrawEditor()
 {
     EngineModule<EngineModule_Entity>::DrawEditor();
 
+    // ptodo - move this to level module
     const std::string titleEntities = StringFormat("Entities (%d):", _entities.size());
     if (ImGui::TreeNodeEx(titleEntities.c_str(), ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_NoTreePushOnOpen))
     {

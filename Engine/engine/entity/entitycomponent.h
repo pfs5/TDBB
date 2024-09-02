@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "entitycomponentaccess.h"
-#include "engine/reflection/baseobject.h"
+#include "engine/object/baseobject.h"
 #include "util/typeid.h"
 
 namespace sf

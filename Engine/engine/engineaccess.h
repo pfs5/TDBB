@@ -13,7 +13,7 @@ class EntityBase;
 // Level access
 class IEngineLevelAccess
 {
-    
+    virtual void LoadLevel(const char* path_) = 0;
 };
 
 struct EngineLevelAccess : public Proxy<IEngineLevelAccess>

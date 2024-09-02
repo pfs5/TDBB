@@ -1,0 +1,14 @@
+{
+    "entities": [
+        {
+            "class": "Entity_Basic",
+            "name": "Test entity 1",
+            "position": { "x": 100, "y": 150 }
+        },
+        {
+            "class": "Entity_Basic",
+            "name": "Test entity 2",
+            "position": { "x": 310, "y": 120 }
+        }
+    ]
+}

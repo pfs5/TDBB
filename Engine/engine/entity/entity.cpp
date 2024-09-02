@@ -6,6 +6,7 @@
 #include "entitycomponent.h"
 #include "imgui.h"
 #include "imgui/imguihelpers.h"
+#include "serialization/serialization.h"
 
 IMPLEMENT_ENTITY(BasicEntity);
 
@@ -52,6 +53,28 @@ void EntityBase::DrawInspectable()
             }
         }
     }
+}
+
+void EntityBase::Serialize(const nlohmann::json& data_) const
+{
+    Super::Serialize(data_);
+
+    // ptodo
+}
+
+bool EntityBase::Deserialize(const char* fileName_, const nlohmann::json& data_)
+{
+    if (!Super::Deserialize(fileName_, data_))
+    {
+        return false;
+    }
+
+    auto name = data_["name"].get_to<std::string>(_name);
+    
+    nlohmann::json j = data_["position"];
+    j.template get_to<sf::Vector2f>(_position);
+    
+    return true;
 }
 
 void EntityBase::EntityCreated()
