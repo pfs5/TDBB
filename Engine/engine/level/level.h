@@ -19,9 +19,10 @@ public:
 
     bool IsValid() const { return _isValid; }
     const std::string& GetName() const { return _name; }
+    const std::string& GetPath() const { return _path; }
 
     // ISerializable
-    virtual void Serialize(const nlohmann::json& data_) const override;
+    virtual void Serialize(nlohmann::json& data_) const override;
     virtual bool Deserialize(const char* fileName_, const nlohmann::json& data_) override;
 
     // IHasEditor
@@ -31,5 +32,6 @@ private:
     bool _isValid = true;
 
     std::string _name;
+    std::string _path;
     std::vector<EntityBase*> _entities; // ptodo - handles instead of raw pointers
 };

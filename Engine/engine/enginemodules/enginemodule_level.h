@@ -13,9 +13,15 @@ public:
     
     virtual void Init() override;
     virtual void Shutdown() override;
+
+    virtual void Update(float deltaSeconds_) override;
+    virtual void Draw(sf::RenderTarget& renderTarget_) override;
+    
     virtual void DrawEditor() override;
 
     virtual void LoadLevel(const char* path_) override;
+
+    void SaveCurrentLevel();
 
 private:
     // There's a level loaded at any time. The default is an empty level.

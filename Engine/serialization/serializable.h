@@ -5,6 +5,6 @@
 class ISerializable
 {
 public:
-    virtual void Serialize(const nlohmann::json& data_) const = 0;
+    virtual void Serialize(nlohmann::json& data_) const = 0;
     virtual bool Deserialize(const char* fileName_, const nlohmann::json& data_) = 0;
 };

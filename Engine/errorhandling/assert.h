@@ -2,4 +2,14 @@
 
 #include <cassert>
 
-#define ensure(condition_) assert(condition_) 
+inline bool ensure(bool condition_)
+{
+    assert(condition_);
+    return condition_;
+}
+
+inline bool ensureMsg(bool condition_, const char* msg_)
+{
+    assert(condition_ && msg_);
+    return condition_;
+}

@@ -2,13 +2,39 @@
     "entities": [
         {
             "class": "Entity_Basic",
+            "components": [
+                {
+                    "class": "EntityComponent_Physics",
+                    "name": "Physics",
+                    "velocity": {
+                        "x": 2.0,
+                        "y": 3.0
+                    }
+                }
+            ],
             "name": "Test entity 1",
-            "position": { "x": 100, "y": 150 }
+            "position": {
+                "x": 100.0,
+                "y": 150.0
+            }
         },
         {
             "class": "Entity_Basic",
+            "components": [
+                {
+                    "class": "EntityComponent_Physics",
+                    "name": "Physics",
+                    "velocity": {
+                        "x": 5.0,
+                        "y": 6.0
+                    }
+                }
+            ],
             "name": "Test entity 2",
-            "position": { "x": 310, "y": 120 }
+            "position": {
+                "x": 310.0,
+                "y": 120.0
+            }
         }
     ]
 }

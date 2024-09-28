@@ -80,9 +80,10 @@ void Engine::Draw()
     // Toolbar
     if (ImGui::Begin("Toolbar"))
     {
-        ImGui::BeginTable("##ToolbarTable", 2, ImGuiTableFlags_Borders);
+        ImGui::BeginTable("##ToolbarTable", 3, ImGuiTableFlags_Borders);
 
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, 100.f);
+        ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, 300.f);
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableNextRow();
 
@@ -112,6 +113,13 @@ void Engine::Draw()
         else
         {
             ImGui::Text("Simulation stopped");
+        }
+
+        // 3 - Load/Save
+        ImGui::TableSetColumnIndex(2);
+        if (ImGui::Button("Save", ImVec2{80.f, 0.f}))
+        {
+            Save();
         }
 
         ImGui::EndTable();
@@ -307,4 +315,9 @@ void Engine::UpdateSimulationStats_Draw()
         _simulationStats.DrawCounter = 0;
         lastCalculationTimestamp = currentTimestamp;
     }
+}
+
+void Engine::Save()
+{
+    _engineModuleLevel.SaveCurrentLevel();
 }

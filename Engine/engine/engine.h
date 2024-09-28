@@ -98,4 +98,6 @@ private:
 
     void UpdateSimulationStats_Update();
     void UpdateSimulationStats_Draw();
+
+    void Save();
 };

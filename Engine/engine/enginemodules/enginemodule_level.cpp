@@ -26,6 +26,32 @@ void EngineModule_Level::Shutdown()
     Super::Shutdown();
 }
 
+void EngineModule_Level::Update(float deltaSeconds_)
+{
+    Super::Update(deltaSeconds_);
+
+    ensure(_engineAccess != nullptr);
+    if (_engineAccess->IsSimulationActive())
+    {
+        for (EntityBase* entity : _currentLevel._entities)
+        {
+            ensure(entity != nullptr);
+            entity->Update(deltaSeconds_);
+        }   
+    }
+}
+
+void EngineModule_Level::Draw(sf::RenderTarget& renderTarget_)
+{
+    Super::Draw(renderTarget_);
+
+    for (EntityBase* entity : _currentLevel._entities)
+    {
+        ensure(entity != nullptr);
+        entity->Draw(renderTarget_);
+    }
+}
+
 void EngineModule_Level::DrawEditor()
 {
     Super::DrawEditor();
@@ -81,5 +107,16 @@ void EngineModule_Level::LoadLevel(const char* path_)
     // ptodo - cleanup current level
 
     _currentLevel.Deserialize(filename.c_str(), data);
+    _currentLevel._path = path_;
     ensure(_currentLevel.IsValid());
+}
+
+void EngineModule_Level::SaveCurrentLevel()
+{
+    ensure(_currentLevel.IsValid());
+
+    nlohmann::json data;
+    _currentLevel.Serialize(data);
+
+    Serialization::SaveJsonToFile(_currentLevel.GetPath().c_str(), data);
 }

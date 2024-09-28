@@ -13,6 +13,8 @@
 #define IMPLEMENT_BASE_OBJECT(Type_) \
     BaseObjectDefinition<Type_> g_##BaseObjectDefinition_##Type_;
 
+class Class;
+
 MAKE_ENUM(
     EObjectCategory, uint8_t
     , BaseObject
@@ -20,10 +22,14 @@ MAKE_ENUM(
     , EntityComponent
     );
 
+// Shouldn't be implemented directly from game code.
 class BaseObject : public ISerializable
 {
 public:
-    virtual void Serialize(const nlohmann::json& data_) const override {}
+    virtual const Class* GetClass() const = 0;
+
+    // ISerializable
+    virtual void Serialize(nlohmann::json& data_) const override {}
     virtual bool Deserialize(const char* fileName_, const nlohmann::json& data_) override { return true; }
     
 protected:
@@ -51,6 +57,9 @@ public:
     
     const std::string& GetName() const { return _name; }
     HashType GetNameHash() const { return _nameHash; }
+
+    bool operator==(const Class& other_) const { return _nameHash == other_._nameHash; }
+    bool operator!=(const Class& other_) const { return !operator==(other_); }
     
 private:
     std::string _name;
@@ -81,18 +90,34 @@ struct ClassCollection
     {
         return const_cast<std::vector<Class>&>(const_cast<const ClassCollection&>(*this).Get(category_));   
     }
-    
-    const Class* FindClass(const char* name) const
+
+    const Class* FindClass(EObjectCategory objectCategory_, HashType nameHash_) const
     {
-        const HashType nameHash = HashString(name);
+        for (const Class& c : Get(objectCategory_))
+        {
+            if (c.GetNameHash() == nameHash_)
+            {
+                return &c;
+            }
+        }
+
+        return nullptr;
+    }
+    
+    const Class* FindClass(EObjectCategory objectCategory_, const char* name_) const
+    {
+        const HashType nameHash = HashString(name_);
+        return FindClass(objectCategory_, nameHash);
+    }
+    
+    const Class* FindClass(const char* name_) const
+    {
+        const HashType nameHash = HashString(name_);
         for (EObjectCategory category : EObjectCategoryIterable{})
         {
-            for (const Class& c : Get(category))
+            if (const Class* const foundClass = FindClass(category, nameHash))
             {
-                if (c.GetNameHash() == nameHash)
-                {
-                    return &c;
-                }
+                return foundClass;
             }
         }
 
@@ -110,6 +135,7 @@ class ObjectRepository
 public:
     static const std::vector<Class>& GetClasses(EObjectCategory category_) { return _collection.Get(category_); }
     static const Class* FindClass(const char* name_) { return _collection.FindClass(name_); }
+    static const Class* FindClass(EObjectCategory objectCategory_, const char* name_) { return _collection.FindClass(objectCategory_, name_); }
     
 private:
     inline static ClassCollection _collection;

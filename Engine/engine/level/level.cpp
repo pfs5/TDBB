@@ -3,9 +3,19 @@
 #include "engine/object/baseobject.h"
 #include "engine/entity/entity.h"
 
-void Level::Serialize(const nlohmann::json& data) const
+#include "thirdparty/json.h"
+
+void Level::Serialize(nlohmann::json& data) const
 {
-    // ptodo
+    std::vector<nlohmann::json> entitiesData;
+    entitiesData.resize(_entities.size());
+    for (size_t i = 0; i < _entities.size(); ++i)
+    {
+        ensure(_entities[i] != nullptr);
+        _entities[i]->Serialize(entitiesData[i]);
+    }
+
+    data["entities"] = entitiesData;
 }
 
 bool Level::Deserialize(const char* fileName_, const nlohmann::json& data_)

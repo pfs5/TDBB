@@ -21,6 +21,18 @@ Serialization::ELoadResult Serialization::LoadJsonFromFile(const char* path_, st
     return ELoadResult::Success;
 }
 
+Serialization::ESaveResult Serialization::SaveJsonToFile(const char* path_, const nlohmann::json& json_)
+{
+    std::ofstream file { path_ };
+    if (!file.is_open())
+    {
+        return ESaveResult::Fail;
+    }
+
+    file << std::setw(4) << json_ << std::endl;
+    return ESaveResult::Success;
+}
+
 void sf::to_json(nlohmann::json& jsonObj_, const sf::Vector2f& vector_)
 {
     jsonObj_ = nlohmann::json{ {"x", vector_.x}, {"y", vector_.y} };
