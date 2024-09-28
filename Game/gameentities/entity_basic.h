@@ -17,3 +17,12 @@ public:
         ConstructComponent<EntityComponent_Physics>("Physics");
     }
 };
+
+class Entity_Basic2 : public Entity<Entity_Basic2>
+{
+public:
+    Entity_Basic2()
+    {
+        ConstructComponent<EntityComponent_Physics>("Physics");
+    }
+};

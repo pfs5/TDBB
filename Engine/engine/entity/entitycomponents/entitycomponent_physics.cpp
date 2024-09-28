@@ -1,8 +1,11 @@
 ﻿#include "engine/entity/entitycomponents/entitycomponent_physics.h"
 
 #include "engine/entity/entity.h"
+#include "serialization/serialization.h"
 
 #include "imgui.h"
+
+IMPLEMENT_ENTITY_COMPONENT(EntityComponent_Physics);
 
 void EntityComponent_Physics::Update(float deltaSeconds_)
 {
@@ -47,4 +50,20 @@ void EntityComponent_Physics::DrawInspectable()
         _velocity.y = inVelocity[1];
     }
     ImGui::EndTable();
+}
+
+void EntityComponent_Physics::Serialize(nlohmann::json& data_) const
+{
+    EntityComponent<EntityComponent_Physics>::Serialize(data_);
+
+    data_["velocity"] = _velocity;
+}
+
+bool EntityComponent_Physics::Deserialize(const char* fileName_, const nlohmann::json& data_)
+{
+    // ptodo
+
+    data_["velocity"].template get_to<sf::Vector2f>(_velocity);
+    
+    return true;
 }

@@ -1,0 +1,28 @@
+{
+    "entities": [
+        {
+            "class": "Entity_Basic",
+            "name": "Test entity 1",
+            "position": { "x": 100, "y": 150 },
+            "components": [
+                {
+                   "class": "EntityComponent_Physics",
+                   "name": "Physics",
+                   "velocity": { "x": 2, "y": 3 }
+                }
+            ]
+        },
+        {
+            "class": "Entity_Basic",
+            "name": "Test entity 2",
+            "position": { "x": 310, "y": 120 },
+            "components": [
+                {
+                    "class": "EntityComponent_Physics",
+                    "name": "Physics",
+                    "velocity": { "x": 5, "y": 6 }
+                 }
+            ]
+        }
+    ]
+}

@@ -66,6 +66,7 @@
       <PrecompiledHeaderFile></PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -88,8 +89,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile></PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,10 +108,13 @@
     <ClCompile Include="engine\enginemodules\enginemodule_entity.cpp" />
     <ClCompile Include="engine\enginemodules\enginemodule_level.cpp" />
     <ClCompile Include="engine\entity\entity.cpp" />
+    <ClCompile Include="engine\entity\entitycomponent.cpp" />
     <ClCompile Include="engine\entity\entitycomponents\entitycomponent_physics.cpp" />
     <ClCompile Include="engine\level\level.cpp" />
+    <ClCompile Include="engine\object\baseobject.cpp" />
     <ClCompile Include="imgui\imguihelpers.cpp" />
     <ClCompile Include="platform\imgui-SFML.cpp" />
+    <ClCompile Include="serialization\serialization.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImGui\ImGui.vcxproj">
@@ -118,6 +124,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
+    <ClInclude Include="editor\haseditor.h" />
     <ClInclude Include="engine\engine.h" />
     <ClInclude Include="engine\engineaccess.h" />
     <ClInclude Include="engine\enginemodule.h" />
@@ -131,6 +138,8 @@
     <ClInclude Include="engine\inspectable.h" />
     <ClInclude Include="engine\level\level.h" />
     <ClInclude Include="engine\moduleengineaccess.h" />
+    <ClInclude Include="engine\object\baseobject.h" />
+    <ClInclude Include="engine\object\objectmemory.h" />
     <ClInclude Include="errorhandling\assert.h" />
     <ClInclude Include="imgui\imguihelpers.h" />
     <ClInclude Include="math\random.h" />
@@ -138,6 +147,13 @@
     <ClInclude Include="platform\imgui-SFML.h" />
     <ClInclude Include="platform\imgui-SFML_export.h" />
     <ClInclude Include="rendering\colors.h" />
+    <ClInclude Include="serialization\archive.h" />
+    <ClInclude Include="serialization\serializable.h" />
+    <ClInclude Include="serialization\serialization.h" />
+    <ClInclude Include="thirdparty\json.h" />
+    <ClInclude Include="thirdparty\json_fwd.h" />
+    <ClInclude Include="util\enumutil.h" />
+    <ClInclude Include="util\hash.h" />
     <ClInclude Include="util\proxy.h" />
     <ClInclude Include="util\stringutil.h" />
     <ClInclude Include="util\typeid.h" />

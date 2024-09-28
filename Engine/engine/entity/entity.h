@@ -6,9 +6,11 @@
 #include "math/vector.h"
 #include "util/stringutil.h"
 #include "util/typeid.h"
+#include "engine/object/baseobject.h"
 
 #include <SFML/System/Vector2.hpp>
 
+class Class;
 class EntityComponentBase;
 
 namespace sf
@@ -16,23 +18,38 @@ namespace sf
     class RenderTarget;
 }
 
-class EntityBase : public IInspectable
+#define IMPLEMENT_ENTITY(Type_) \
+    EntityDefinition<Type_> g_##EntityDefinition##Type_;    
+
+// Don't implement this class directly.
+class EntityBase : public BaseObject, public IInspectable
 {
+    using Super = BaseObject;
+    
 public:
     EntityBase() = default;
     virtual ~EntityBase() = default;
     
     virtual std::string GetTypeName() const = 0;
+
+    // BaseObject
+    virtual const Class* GetClass() const override { return _class; }
     
     // IInspectable
     virtual const char* GetInspectableName() const override { return _inspectorName.c_str(); }
     virtual void DrawInspectable() override;
 
+    // ISerializable
+    virtual void Serialize(nlohmann::json& data_) const override;
+    virtual bool Deserialize(const char* fileName_, const nlohmann::json& data_) override;
+    
     void EntityCreated();
     void Update(float deltaSeconds_);
     void Draw(sf::RenderTarget& renderTarget_);
 
     const std::vector<EntityComponentBase*>& GetComponents() const { return _components; }
+    EntityComponentBase* FindComponent(const char* componentName_) const;
+    EntityComponentBase* FindComponent(const Class& class_, const char* componentName_) const;
     
     // ptodo - move to private engine access
     void SetEntityName(const char* name_) { _name = name_; }
@@ -66,9 +83,13 @@ protected:
     
 protected:
     std::string _inspectorName; // cached to avoid constant recalculation.
+
+protected:
+    void SetupClass(const char* typeName_);
     
 private:
     std::string _name;
+    const Class* _class = nullptr;
     
     sf::Vector2f _position = ZERO_VECTOR_F;
     std::vector<EntityComponentBase*> _components;
@@ -81,11 +102,23 @@ public:
     Entity()
     {
         _inspectorName = StringFormat("%s (%s)", GetEntityName().c_str(), GetTypeName().c_str());
+        SetupClass(Entity<CRTP>::GetTypeName().c_str());
     }
     
     // EntityBase
     virtual std::string GetTypeName() const final { return TypeId<CRTP>::GetName(); }
     
+};
+
+template <typename EntityType>
+struct EntityDefinition : public BaseObjectDefinition<EntityType, EObjectCategory::Entity>
+{
+    // ptodo - ensure entities use this definition and not BaseObjectDefinition directly
+    
+    EntityDefinition()
+    {
+        static_assert(std::is_base_of_v<EntityBase, EntityType> && "T must inherit Entity.");
+    }
 };
 
 // Convenience empty entity.

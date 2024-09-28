@@ -11,6 +11,10 @@
 
 #include <chrono>
 
+#include "imgui/imguihelpers.h"
+#include "object/baseobject.h"
+#include "util/stringutil.h"
+
 Engine::Engine() = default;
 
 void Engine::Init(const EngineSetupParams& params_)
@@ -29,7 +33,7 @@ void Engine::Init(const EngineSetupParams& params_)
 
     if (params_.StartLevel != nullptr)
     {
-        params_.StartLevel->SetupLevel();
+        // params_.StartLevel->SetupLevel();
     }
 }
 
@@ -46,7 +50,7 @@ void Engine::StartEngine()
     // ptodo - current level
     if (_setupParams.StartLevel != nullptr)
     {
-        _setupParams.StartLevel->StartLevel();
+        // _setupParams.StartLevel->StartLevel();
     }
 }
 
@@ -55,7 +59,7 @@ void Engine::StopEngine()
     // ptodo - current level
     if (_setupParams.StartLevel != nullptr)
     {
-        _setupParams.StartLevel->StopLevel();
+        // _setupParams.StartLevel->StopLevel();
     }
 }
 
@@ -76,9 +80,10 @@ void Engine::Draw()
     // Toolbar
     if (ImGui::Begin("Toolbar"))
     {
-        ImGui::BeginTable("##ToolbarTable", 2, ImGuiTableFlags_Borders);
+        ImGui::BeginTable("##ToolbarTable", 3, ImGuiTableFlags_Borders);
 
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, 100.f);
+        ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, 300.f);
         ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch);
         ImGui::TableNextRow();
 
@@ -108,6 +113,13 @@ void Engine::Draw()
         else
         {
             ImGui::Text("Simulation stopped");
+        }
+
+        // 3 - Load/Save
+        ImGui::TableSetColumnIndex(2);
+        if (ImGui::Button("Save", ImVec2{80.f, 0.f}))
+        {
+            Save();
         }
 
         ImGui::EndTable();
@@ -160,6 +172,33 @@ void Engine::Draw()
     }
     ImGui::End();
 
+    // ptodo
+    // Window - Classes
+    if (ImGui::Begin("Classes"))
+    {
+        if (ImGui::CollapsingHeader("Registered classes:", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            IMGUI_SCOPED_INDENT();
+
+            for (EObjectCategory category : EObjectCategoryIterable{})
+            {
+                const char* const categoryName = ToString(category);
+                const std::string title = StringFormat("%s:", categoryName);
+                if (ImGui::CollapsingHeader(title.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    IMGUI_SCOPED_INDENT();
+                    
+                    const std::vector<Class>& classes = ObjectRepository::GetClasses(category);
+                    for (size_t classIdx = 0; classIdx < classes.size(); ++classIdx)
+                    {
+                        const Class& c = classes[classIdx];
+                        ImGui::Text("[%02lld] %s", classIdx, c.GetName().c_str());
+                    }
+                }
+            }
+        }
+    }
+    ImGui::End();
     
     // Game win
     if (ImGui::Begin("Viewport"))
@@ -276,4 +315,9 @@ void Engine::UpdateSimulationStats_Draw()
         _simulationStats.DrawCounter = 0;
         lastCalculationTimestamp = currentTimestamp;
     }
+}
+
+void Engine::Save()
+{
+    _engineModuleLevel.SaveCurrentLevel();
 }

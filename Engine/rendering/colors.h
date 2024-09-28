@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics/Color.hpp>
+
 inline ImVec4 ToImVec4(const sf::Color& color_)
 {
     return ImVec4{
@@ -13,4 +15,5 @@ inline ImVec4 ToImVec4(const sf::Color& color_)
 namespace Colors
 {
     static inline const sf::Color LightGreen {0, 255, 0, 255};
+    static inline const sf::Color DarkYellow {200, 200, 0, 255};
 }
