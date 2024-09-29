@@ -10,6 +10,9 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include "property.h"
+
+class PropertyBase;
 class Class;
 class EntityComponentBase;
 
@@ -20,6 +23,9 @@ namespace sf
 
 #define IMPLEMENT_ENTITY(Type_) \
     EntityDefinition<Type_> g_##EntityDefinition##Type_;    
+
+#define ENTITY_PROPERTY(Type_, Name_, SerializationName_, DefaultValue) \
+    EntityProperty<Type_> (Name_){ _properties, SerializationName_, DefaultValue };
 
 // Don't implement this class directly.
 class EntityBase : public BaseObject, public IInspectable
@@ -81,23 +87,23 @@ protected:
         return component;
     }
 
-    void UpdateInspectorName() { _inspectorName = StringFormat("%s (%s)", _name.c_str(), GetTypeName().c_str()); }
+    void UpdateInspectorName() { _inspectorName = StringFormat("%s (%s)", _name->c_str(), GetTypeName().c_str()); }
     
 protected:
     std::string _inspectorName; // cached to avoid constant recalculation.
 
 protected:
-    void SetBoundsSize(float x_, float y_) { _boundsSize.x = x_; _boundsSize.y = y_; }
+    void SetBoundsSize(float x_, float y_) { _boundsSize->x = x_; _boundsSize->y = y_; }
     void SetupClass(const char* typeName_);
     
 private:
-    std::string _name;
-    const Class* _class = nullptr;
-    
-    sf::Vector2f _position = ZERO_VECTOR_F;
-    sf::Vector2f _boundsSize = ZERO_VECTOR_F;
-    
     std::vector<EntityComponentBase*> _components;
+    std::vector<PropertyBase*> _properties; // must be defined before all properties.
+
+    ENTITY_PROPERTY(std::string, _name, "Name", "");
+    ENTITY_PROPERTY(sf::Vector2f, _position, "Position", ZERO_VECTOR_F);
+    ENTITY_PROPERTY(sf::Vector2f, _boundsSize, "BoundsSize", ZERO_VECTOR_F);
+    ENTITY_PROPERTY(const Class*, _class, "Class", nullptr);
 };
 
 template <typename CRTP>

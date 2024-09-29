@@ -5,6 +5,8 @@
 #include "imgui/imguihelpers.h"
 #include "serialization/serialization.h"
 
+#include <SFML/System/Vector2.hpp>
+
 IMPLEMENT_ENTITY(BasicEntity);
 
 void EntityBase::DrawInspectable()
@@ -21,14 +23,17 @@ void EntityBase::DrawInspectable()
 
     ImGui::TableNextRow();
     
-    ImGui::TableSetColumnIndex(0);
-    ImGui::Text("Position");
-    ImGui::TableSetColumnIndex(1);
-    float inPosition [] = { _position.x, _position.y };
-    if(ImGui::InputFloat2("##position", inPosition, "%.2f"))
+    // ptodo - auto properties
+    for (PropertyBase* property : _properties)
     {
-        SetPosition(sf::Vector2f{ inPosition[0], inPosition[1] });
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text(property->GetName());
+        ImGui::TableSetColumnIndex(1);
+        property->DrawEditor();
+
+        ImGui::TableNextRow();
     }
+    
     ImGui::EndTable();
 
     ImGui::NewLine();
@@ -55,9 +60,14 @@ void EntityBase::DrawInspectable()
 void EntityBase::Serialize(nlohmann::json& data_) const
 {
     Super::Serialize(data_);
-    data_["class"] = _class->GetName();
-    data_["name"] = _name;
-    data_["position"] = _position;
+    data_["class"] = _class.GetName();
+
+    // ptodo - auto serialization
+    for (const PropertyBase* const property : _properties)
+    {
+        ensure(property != nullptr);
+        property->Serialize(data_);
+    }
 
     // ptodo - components
     for (const EntityComponentBase* const component : _components)
@@ -76,9 +86,15 @@ bool EntityBase::Deserialize(const char* fileName_, const nlohmann::json& data_)
         return false;
     }
 
-    data_["name"].get_to<std::string>(_name);
-    data_["position"].template get_to<sf::Vector2f>(_position);
+    // ptodo - auto deser.
+    for (PropertyBase* const property : _properties)
+    {
+        ensure(property != nullptr);
+        property->Deserialize(data_);
+    }
 
+    // ptodo - components
+    
     // Components
     for (const nlohmann::json& compJson : data_["components"])
     {
