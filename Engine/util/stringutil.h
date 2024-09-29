@@ -1,8 +1,33 @@
 #pragma once
 
+#include "errorhandling/assert.h"
+
 #include <memory>
 #include <string>
 #include <string_view>
+
+// String wrapper that can only be created from a string literal. Can be used to force only string literals as arguments.
+// Example:
+// StringLiteral s {"test"};    // OK
+// std::string str; StringLiteral s {str.c_str};            // NOT OK
+// char str [10] = ""; StringLiteral s {str};               // NOT OK
+// const char* str = new char [10]; StringLiteral s{str};   // NOT OK
+//
+class StringLiteral
+{
+public:
+    template <size_t N>
+    consteval StringLiteral(const char (&value_)[N]):
+        _value(value_)
+    {
+        
+    }
+    
+    const char* operator*() const { return _value; }
+    
+private:
+    const char* _value;
+};
 
 struct RotatingStringBuffer
 {

@@ -1,7 +1,17 @@
 {
     "entities": [
         {
-            "class": "Entity_Basic",
+            "BoundsSize": {
+                "x": 50.0,
+                "y": 80.0
+            },
+            "Class": "Entity_Basic",
+            "Name": "Test entity 1",
+            "Position": {
+                "x": 121.0,
+                "y": 152.0
+            },
+            "class": "Class",
             "components": [
                 {
                     "class": "EntityComponent_Physics",
@@ -11,15 +21,20 @@
                         "y": 3.0
                     }
                 }
-            ],
-            "name": "Test entity 1",
-            "position": {
-                "x": 178.0,
-                "y": 141.0
-            }
+            ]
         },
         {
-            "class": "Entity_Basic",
+            "BoundsSize": {
+                "x": 80.0,
+                "y": 80.0
+            },
+            "Class": "Entity_Basic",
+            "Name": "Test entity 2",
+            "Position": {
+                "x": 371.0,
+                "y": 203.0
+            },
+            "class": "Class",
             "components": [
                 {
                     "class": "EntityComponent_Physics",
@@ -29,12 +44,7 @@
                         "y": 6.0
                     }
                 }
-            ],
-            "name": "Test entity 2",
-            "position": {
-                "x": 505.0,
-                "y": 142.0
-            }
+            ]
         }
     ]
 }

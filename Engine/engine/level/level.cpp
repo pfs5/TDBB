@@ -41,7 +41,7 @@ bool Level::Deserialize(const char* fileName_, const nlohmann::json& data_)
     // Load entities
     for (const auto& entityData : data_["entities"])
     {
-        const std::string classStr = entityData["class"].get<std::string>();
+        const std::string classStr = entityData["Class"].get<std::string>();
         const Class* classObject = ObjectRepository::FindClass(classStr.c_str());
         ensure(classObject != nullptr);
 

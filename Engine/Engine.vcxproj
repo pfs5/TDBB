@@ -187,11 +187,14 @@
     <ClCompile Include="engine\entity\entity.cpp" />
     <ClCompile Include="engine\entity\entitycomponent.cpp" />
     <ClCompile Include="engine\entity\entitycomponents\entitycomponent_physics.cpp" />
+    <ClCompile Include="engine\entity\property.cpp" />
+    <ClCompile Include="engine\entity\propertyeditors.cpp" />
     <ClCompile Include="engine\level\level.cpp" />
     <ClCompile Include="engine\object\baseobject.cpp" />
     <ClCompile Include="imgui\imguihelpers.cpp" />
     <ClCompile Include="platform\imgui-SFML.cpp" />
     <ClCompile Include="serialization\serialization.cpp" />
+    <ClCompile Include="serialization\valueserialization_impl.cpp" />
     <ClCompile Include="util\color.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +222,8 @@
     <ClInclude Include="engine\entity\entitycomponentaccess.h" />
     <ClInclude Include="engine\entity\entitycomponents\entitycomponent_physics.h" />
     <ClInclude Include="engine\entity\entitymemory.h" />
+    <ClInclude Include="engine\entity\property.h" />
+    <ClInclude Include="engine\entity\propertyserialization.h" />
     <ClInclude Include="engine\inspectable.h" />
     <ClInclude Include="engine\level\level.h" />
     <ClInclude Include="engine\moduleengineaccess.h" />
@@ -236,6 +241,8 @@
     <ClInclude Include="serialization\archive.h" />
     <ClInclude Include="serialization\serializable.h" />
     <ClInclude Include="serialization\serialization.h" />
+    <ClInclude Include="serialization\valueserialization.h" />
+    <ClInclude Include="serialization\valueserialization_impl.h" />
     <ClInclude Include="thirdparty\json.h" />
     <ClInclude Include="thirdparty\json_fwd.h" />
     <ClInclude Include="util\color.h" />
@@ -245,6 +252,7 @@
     <ClInclude Include="util\stringutil.h" />
     <ClInclude Include="util\time.h" />
     <ClInclude Include="util\typeid.h" />
+    <ClInclude Include="util\typeutils.h" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="todo.txt" />
