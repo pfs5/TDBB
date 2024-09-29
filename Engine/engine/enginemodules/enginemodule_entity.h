@@ -5,6 +5,7 @@
 
 class EntityBase;
 
+// ptodo - remove?
 class EngineModule_Entity : public EngineModule<EngineModule_Entity>, public IEngineEntityAccess
 {
     using Super = EngineModule<EngineModule_Entity>;

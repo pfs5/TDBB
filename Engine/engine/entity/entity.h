@@ -44,8 +44,8 @@ public:
     virtual bool Deserialize(const char* fileName_, const nlohmann::json& data_) override;
     
     void EntityCreated();
-    void Update(float deltaSeconds_);
-    void Draw(sf::RenderTarget& renderTarget_);
+    virtual void Update(float deltaSeconds_);
+    virtual void Draw(sf::RenderTarget& renderTarget_);
 
     const std::vector<EntityComponentBase*>& GetComponents() const { return _components; }
     EntityComponentBase* FindComponent(const char* componentName_) const;
@@ -58,6 +58,8 @@ public:
 
     void SetPosition(sf::Vector2f value_) { _position = value_; }
     sf::Vector2f GetPosition() const { return _position; }
+
+    sf::Vector2f GetBoundsSize() const { return _boundsSize; }
 
 protected:
     // Entities should create components in their constructors.
@@ -85,6 +87,7 @@ protected:
     std::string _inspectorName; // cached to avoid constant recalculation.
 
 protected:
+    void SetBoundsSize(float x_, float y_) { _boundsSize.x = x_; _boundsSize.y = y_; }
     void SetupClass(const char* typeName_);
     
 private:
@@ -92,6 +95,8 @@ private:
     const Class* _class = nullptr;
     
     sf::Vector2f _position = ZERO_VECTOR_F;
+    sf::Vector2f _boundsSize = ZERO_VECTOR_F;
+    
     std::vector<EntityComponentBase*> _components;
 };
 

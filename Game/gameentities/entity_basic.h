@@ -11,11 +11,19 @@ class EntityComponent_Test : public EntityComponent<EntityComponent_Test>
 
 class Entity_Basic : public Entity<Entity_Basic>
 {
+    using Super = Entity<Entity_Basic>;
+    
 public:
     Entity_Basic()
     {
         ConstructComponent<EntityComponent_Physics>("Physics");
+
+        // ptodo - testing
+        SetBoundsSize(80.f, 80.f);
     }
+
+    virtual void Update(float deltaSeconds_) override;
+    virtual void Draw(sf::RenderTarget& renderTarget_) override;
 };
 
 class Entity_Basic2 : public Entity<Entity_Basic2>

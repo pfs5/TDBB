@@ -5,6 +5,19 @@
 
 #include "thirdparty/json.h"
 
+void Level::SetupLevel()
+{
+    ensure(IsValid());
+}
+
+void Level::TeardownLevel()
+{
+    _isValid = false;
+    _name.clear();
+    _path.clear();
+    _entities.clear();
+}
+
 void Level::Serialize(nlohmann::json& data) const
 {
     std::vector<nlohmann::json> entitiesData;
@@ -43,6 +56,8 @@ bool Level::Deserialize(const char* fileName_, const nlohmann::json& data_)
         entity->EntityCreated();
         
         _entities.emplace_back(entity);
+
+        _onEntityAdded.Broadcast(*entity);
     }
     
     _isValid = true;

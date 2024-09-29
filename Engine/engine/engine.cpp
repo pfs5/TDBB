@@ -1,19 +1,18 @@
 #include "engine/engine.h"
 
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/RenderTexture.hpp>
-
 #include "imgui.h"
 #include "inspectable.h"
-#include "level/level.h"
 #include "rendering/colors.h"
 #include "platform/imgui-SFML.h"
-
-#include <chrono>
 
 #include "imgui/imguihelpers.h"
 #include "object/baseobject.h"
 #include "util/stringutil.h"
+#include "util/time.h"
+
+#include <SFML/Graphics/RenderTexture.hpp>
+
+#include <chrono>
 
 Engine::Engine() = default;
 
@@ -21,16 +20,9 @@ void Engine::Init(const EngineSetupParams& params_)
 {
     _setupParams = params_;
 
-    for (EngineModuleBase* module : _engineModules)
-    {
-        module->SetupModule(this);
-    }
+    SetupModules();
+    InitModules();
     
-    for (EngineModuleBase* module : _engineModules)
-    {
-        module->Init();
-    }
-
     if (params_.StartLevel != nullptr)
     {
         // params_.StartLevel->SetupLevel();
@@ -39,14 +31,17 @@ void Engine::Init(const EngineSetupParams& params_)
 
 void Engine::Shutdown()
 {
-    for (EngineModuleBase* module : _engineModules)
-    {
-        module->Shutdown();
-    }
+    ShutdownModules();
 }
 
 void Engine::StartEngine()
 {
+    StartupModules();
+    
+    _engineStartTimestampMs = Time::NowMs();
+
+    NotifyModulesEngineStarted();
+    
     // ptodo - current level
     if (_setupParams.StartLevel != nullptr)
     {
@@ -76,7 +71,7 @@ void Engine::Update(float deltaSeconds_)
 void Engine::Draw()
 {
     UpdateSimulationStats_Draw();
-
+    
     // Toolbar
     if (ImGui::Begin("Toolbar"))
     {
@@ -144,17 +139,32 @@ void Engine::Draw()
         {
             for (EngineModuleBase* module : _engineModules)
             {
-                ensure(module != nullptr);
+                IMGUI_SCOPED_INDENT();
 
-                ImGui::Indent();
+                ensure(module != nullptr);
 
                 const std::string moduleName = module->GetModuleName();
                 if(ImGui::CollapsingHeader(moduleName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
                 {
                     module->DrawEditor();
                 }
+            }   
+        }
+        
+        // Draw editors debug
+        if (ImGui::CollapsingHeader("Editors:", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            for (EditorModuleBase* module : _editorModules)
+            {
+                IMGUI_SCOPED_INDENT();
 
-                ImGui::Unindent();
+                ensure(module != nullptr);
+
+                const std::string moduleName = module->GetModuleName();
+                if(ImGui::CollapsingHeader(moduleName.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+                {
+                    module->DrawEditor();
+                }
             }   
         }
     }
@@ -199,14 +209,24 @@ void Engine::Draw()
         }
     }
     ImGui::End();
+
+    // Window - Logger
+    if (ImGui::Begin("Logger"))
+    {
+        _engineModuleLogger.DrawWindow();
+    }
+    ImGui::End();
     
     // Game win
     if (ImGui::Begin("Viewport"))
     {
+        const ImVec2 windowPos = ImGui::GetWindowPos();
+        
         // Render target for game draw
         static ImVec2 viewportSize { static_cast<float>(_setupParams.GameWindowSize.x), static_cast<float>(_setupParams.GameWindowSize.y) }; // ptodo - game size
         sf::ContextSettings windowSettings;
         windowSettings.antialiasingLevel = 1;
+        // ptodo - should we call create every time? can something be cached?
         _gameRenderTexture.create(static_cast<unsigned int>(viewportSize.x), static_cast<unsigned int>(viewportSize.y));
         _gameRenderTexture.setSmooth(true);
         _gameRenderTexture.clear(sf::Color::Black);
@@ -214,9 +234,78 @@ void Engine::Draw()
         DrawGame();
 
         viewportSize = ImGui::GetWindowSize();
+
+        const ImVec2 gameRenderTexturePos = ImGui::GetCursorPos();
         ImGui::Image(_gameRenderTexture);
+
+        // We have to use the absolute pos of the window and also the local pos of the texture where we render the game.
+        _gameWindowPosition.x = static_cast<int>(windowPos.x + gameRenderTexturePos.x);
+        _gameWindowPosition.y = static_cast<int>(windowPos.y + gameRenderTexturePos.y);
     }
     ImGui::End();
+}
+
+uint64_t Engine::GetEditorTimeMilliseconds()
+{
+    return Time::NowMs() - _engineStartTimestampMs;
+}
+
+void Engine::SetupModules()
+{
+    for (EngineModuleBase* module : _engineModules)
+    {
+        module->SetupModule(this, this);
+    }
+    for (EditorModuleBase* module : _editorModules)
+    {
+        module->SetupModule(this);
+    }
+}
+
+void Engine::InitModules()
+{
+    
+    for (EngineModuleBase* module : _engineModules)
+    {
+        module->Init();
+    }
+    for (EditorModuleBase* module : _editorModules)
+    {
+        module->Init();
+    }
+}
+
+void Engine::StartupModules()
+{
+    for (EngineModuleBase* const module : _engineModules)
+    {
+        module->Startup();
+    }
+
+    for (EditorModuleBase* const module : _editorModules)
+    {
+        module->Startup();
+    }
+}
+
+void Engine::NotifyModulesEngineStarted()
+{
+    for (EngineModuleBase* const module : _engineModules)
+    {
+        module->OnEngineStarted();
+    }
+}
+
+void Engine::ShutdownModules()
+{
+    for (EngineModuleBase* module : _engineModules)
+    {
+        module->Shutdown();
+    }
+    for (EditorModuleBase* module : _editorModules)
+    {
+        module->Shutdown();
+    }
 }
 
 void Engine::UpdateModules(float deltaSeconds_)
@@ -226,11 +315,23 @@ void Engine::UpdateModules(float deltaSeconds_)
         ensure(module != nullptr);
         module->Update(deltaSeconds_);
     }
+
+    for (EditorModuleBase* module : _editorModules)
+    {
+        ensure(module != nullptr);
+        module->Update(deltaSeconds_);
+    }
 }
 
 void Engine::DrawModules(sf::RenderTarget& renderTarget_)
 {
     for (EngineModuleBase* module : _engineModules)
+    {
+        ensure(module != nullptr);
+        module->Draw(renderTarget_);
+    }
+    
+    for (EditorModuleBase* module : _editorModules)
     {
         ensure(module != nullptr);
         module->Draw(renderTarget_);

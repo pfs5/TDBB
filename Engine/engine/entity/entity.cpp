@@ -1,8 +1,5 @@
 ﻿#include "engine/entity/entity.h"
 
-#include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-
 #include "entitycomponent.h"
 #include "imgui.h"
 #include "imgui/imguihelpers.h"
@@ -118,12 +115,6 @@ void EntityBase::Draw(sf::RenderTarget& renderTarget_)
     {
         component->Draw(renderTarget_);
     }
-    
-    // ptodo - testing
-    sf::RectangleShape shape { sf::Vector2f{20.f, 20.f} };
-    shape.setFillColor(sf::Color::Yellow);
-    shape.setPosition(_position);
-    renderTarget_.draw(shape);
 }
 
 EntityComponentBase* EntityBase::FindComponent(const char* componentName_) const

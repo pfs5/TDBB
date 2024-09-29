@@ -103,10 +103,87 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
+    <ClCompile Include="engine\editormodules\editormodule_leveleditor.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>x64\Debug\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>x64\Debug\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>x64\Debug\</ModuleDependenciesFile>
+      <ModuleOutputFile>x64\Debug\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>x64\Debug\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>X:\Coding\Projects\Games\tower-defence-but-better\TowerDefenseButBetter\x64\Debug\Engine.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderOutputFile>x64\Debug\Engine.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>x64\Debug\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>x64\Debug\Engine.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>x64\Debug\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <BuildStlModules>false</BuildStlModules>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>SFML_STATIC;_DEBUG;_CONSOLE;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <UseStandardPreprocessor>true</UseStandardPreprocessor>
+      <LibCompiled>true</LibCompiled>
+    </ClCompile>
     <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="engine\engineaccess.cpp" />
+    <ClCompile Include="engine\enginemodules\enginemodule_inputs.cpp" />
     <ClCompile Include="engine\enginemodules\enginemodule_entity.cpp" />
     <ClCompile Include="engine\enginemodules\enginemodule_level.cpp" />
+    <ClCompile Include="engine\enginemodules\enginemodule_logger.cpp" />
     <ClCompile Include="engine\entity\entity.cpp" />
     <ClCompile Include="engine\entity\entitycomponent.cpp" />
     <ClCompile Include="engine\entity\entitycomponents\entitycomponent_physics.cpp" />
@@ -115,6 +192,7 @@
     <ClCompile Include="imgui\imguihelpers.cpp" />
     <ClCompile Include="platform\imgui-SFML.cpp" />
     <ClCompile Include="serialization\serialization.cpp" />
+    <ClCompile Include="util\color.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImGui\ImGui.vcxproj">
@@ -125,11 +203,17 @@
   <ItemGroup>
     <ClInclude Include="application.h" />
     <ClInclude Include="editor\haseditor.h" />
+    <ClInclude Include="engine\editorengineaccess.h" />
+    <ClInclude Include="engine\editormodule.h" />
+    <ClInclude Include="engine\editormodules\editormodule_leveleditor.h" />
     <ClInclude Include="engine\engine.h" />
     <ClInclude Include="engine\engineaccess.h" />
     <ClInclude Include="engine\enginemodule.h" />
+    <ClInclude Include="engine\enginemodules\enginemodule_inputs.h" />
     <ClInclude Include="engine\enginemodules\enginemodule_entity.h" />
     <ClInclude Include="engine\enginemodules\enginemodule_level.h" />
+    <ClInclude Include="engine\enginemodules\enginemodule_logger.h" />
+    <ClInclude Include="engine\engineutils\log.h" />
     <ClInclude Include="engine\entity\entity.h" />
     <ClInclude Include="engine\entity\entitycomponent.h" />
     <ClInclude Include="engine\entity\entitycomponentaccess.h" />
@@ -141,7 +225,9 @@
     <ClInclude Include="engine\object\baseobject.h" />
     <ClInclude Include="engine\object\objectmemory.h" />
     <ClInclude Include="errorhandling\assert.h" />
+    <ClInclude Include="events\delegate.h" />
     <ClInclude Include="imgui\imguihelpers.h" />
+    <ClInclude Include="math\bounds.h" />
     <ClInclude Include="math\random.h" />
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="platform\imgui-SFML.h" />
@@ -152,10 +238,12 @@
     <ClInclude Include="serialization\serialization.h" />
     <ClInclude Include="thirdparty\json.h" />
     <ClInclude Include="thirdparty\json_fwd.h" />
+    <ClInclude Include="util\color.h" />
     <ClInclude Include="util\enumutil.h" />
     <ClInclude Include="util\hash.h" />
     <ClInclude Include="util\proxy.h" />
     <ClInclude Include="util\stringutil.h" />
+    <ClInclude Include="util\time.h" />
     <ClInclude Include="util\typeid.h" />
   </ItemGroup>
   <ItemGroup>

@@ -1,10 +1,15 @@
 #pragma once
 
+#include <SFML/Window/Mouse.hpp>
+
 #include "entity/entitymemory.h"
 #include "errorhandling/assert.h"
+#include "events/delegate.h"
 #include "util/proxy.h"
 
 #include "SFML/System/Vector2.hpp"
+
+// ptodo - this should be moved to separate files
 
 // Use these interfaces and proxies to access engine features.
 
@@ -13,7 +18,13 @@ class EntityBase;
 // Level access
 class IEngineLevelAccess
 {
+public:
+    using EntityAddedDelegate = Delegate<EntityBase& /* entity_ */>;
+    using CurrentLevelChangedDelegate = Delegate<>;
+    
     virtual void LoadLevel(const char* path_) = 0;
+    virtual EntityAddedDelegate& EntityAdded() = 0;
+    virtual CurrentLevelChangedDelegate& CurrentLevelChanged() = 0;
 };
 
 struct EngineLevelAccess : public Proxy<IEngineLevelAccess>
@@ -48,5 +59,32 @@ protected:
 
 struct EngineEntityAccess : public Proxy<IEngineEntityAccess>
 {
-    
+    EngineEntityAccess();
+};
+
+// ptodo - very simple interface for now.
+class IEngineLogAccess
+{
+public:
+    virtual void Log(const char* string_) = 0;
+    virtual void LogKey(uint32_t key_, const char* string_) = 0;
+};
+
+struct EngineLogAccess : public Proxy<IEngineLogAccess>
+{
+    EngineLogAccess();
+};
+
+class IEngineInputsAccess
+{
+public:
+    virtual sf::Vector2i GetMousePosition() const = 0;
+    virtual bool IsMouseButtonDown(sf::Mouse::Button mouseButton_) const = 0;
+    virtual bool MouseButtonPressed(sf::Mouse::Button mouseButton_) const = 0;
+    virtual bool MouseButtonReleased(sf::Mouse::Button mouseButton_) const = 0;
+};
+
+struct EngineInputsAccess : public Proxy<IEngineInputsAccess>
+{
+    EngineInputsAccess();
 };

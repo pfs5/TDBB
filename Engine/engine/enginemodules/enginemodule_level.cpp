@@ -2,6 +2,7 @@
 
 #include "engine/inspectable.h"
 #include "engine/moduleengineaccess.h"
+#include "engine/engineutils/log.h"
 #include "imgui/imguihelpers.h"
 #include "rendering/colors.h"
 #include "serialization/serialization.h"
@@ -14,6 +15,11 @@ void EngineModule_Level::Init()
     Super::Init();
 
     EngineLevelAccess::Open(*this);
+}
+
+void EngineModule_Level::OnEngineStarted()
+{
+    Super::OnEngineStarted();
 
     // ptodo - testing
     LoadLevel("X:\\Coding\\Projects\\Games\\tower-defence-but-better\\TowerDefenseButBetter\\resources\\level_showcase.json");
@@ -73,7 +79,7 @@ void EngineModule_Level::DrawEditor()
         {
             IMGUI_SCOPED_INDENT();
 
-            const IInspectable* const currentInspected = _engineAccess->GetCurrentInspected();
+            const IInspectable* const currentInspected = _editorAccess->GetCurrentInspected();
             for (EntityBase* entity : _currentLevel._entities)
             {
                 ensure(entity != nullptr);
@@ -85,7 +91,7 @@ void EngineModule_Level::DrawEditor()
 
                 if(ImGui::Selectable(titleEntity.c_str(), &selected))
                 {
-                    _engineAccess->SetCurrentInspected(entity);                
+                    _editorAccess->SetCurrentInspected(entity);                
                 }
             }
         }
@@ -104,14 +110,19 @@ void EngineModule_Level::LoadLevel(const char* path_)
         return;
     }
 
-    // ptodo - cleanup current level
+    _currentLevel.TeardownLevel();
 
+    _currentLevelChanged.Broadcast();
+    
+    // Init callbacks
+    _currentLevel.OnEntityAdded().AddListener(this, &EngineModule_Level::OnEntityAddedToCurrentLevel);
+    
     _currentLevel.Deserialize(filename.c_str(), data);
     _currentLevel._path = path_;
     ensure(_currentLevel.IsValid());
 }
 
-void EngineModule_Level::SaveCurrentLevel()
+void EngineModule_Level::SaveCurrentLevel() const
 {
     ensure(_currentLevel.IsValid());
 
@@ -119,4 +130,9 @@ void EngineModule_Level::SaveCurrentLevel()
     _currentLevel.Serialize(data);
 
     Serialization::SaveJsonToFile(_currentLevel.GetPath().c_str(), data);
+}
+
+void EngineModule_Level::OnEntityAddedToCurrentLevel(EntityBase& entity_)
+{
+    _entityAdded.Broadcast(entity_);
 }

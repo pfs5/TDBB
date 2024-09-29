@@ -4,14 +4,17 @@
 #include "engine/enginemodule.h"
 #include "engine/level/level.h"
 
+class EntityBase;
+
 class EngineModule_Level : public EngineModule<EngineModule_Level>, public IEngineLevelAccess
 {
     using Super = EngineModule<EngineModule_Level>;
 
 public:
     using Super::Super;
-    
+
     virtual void Init() override;
+    virtual void OnEngineStarted() override;
     virtual void Shutdown() override;
 
     virtual void Update(float deltaSeconds_) override;
@@ -20,10 +23,18 @@ public:
     virtual void DrawEditor() override;
 
     virtual void LoadLevel(const char* path_) override;
-
-    void SaveCurrentLevel();
+    virtual EntityAddedDelegate& EntityAdded() override { return _entityAdded; }
+    virtual CurrentLevelChangedDelegate& CurrentLevelChanged() override { return _currentLevelChanged; }
+    
+    void SaveCurrentLevel() const;
 
 private:
     // There's a level loaded at any time. The default is an empty level.
     Level _currentLevel;
+
+    EntityAddedDelegate _entityAdded;
+    CurrentLevelChangedDelegate _currentLevelChanged;
+    
+private:
+    void OnEntityAddedToCurrentLevel(EntityBase& entity_);
 };

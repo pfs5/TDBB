@@ -55,7 +55,7 @@ void EngineModule_Entity::DrawEditor()
     {
         IMGUI_SCOPED_INDENT();
 
-        const IInspectable* const currentInspected = _engineAccess->GetCurrentInspected();
+        const IInspectable* const currentInspected = _editorAccess->GetCurrentInspected();
         for (EntityBase* entity : _entities)
         {
             ensure(entity != nullptr);
@@ -67,7 +67,7 @@ void EngineModule_Entity::DrawEditor()
 
             if(ImGui::Selectable(titleEntity.c_str(), &selected))
             {
-                _engineAccess->SetCurrentInspected(entity);                
+                _editorAccess->SetCurrentInspected(entity);                
             }
         }
     }

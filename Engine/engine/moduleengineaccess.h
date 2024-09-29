@@ -1,14 +1,21 @@
 ﻿#pragma once
 
-class IInspectable;
+#include <SFML/System/Vector2.hpp>
+#include <cstdint>
+
+namespace sf
+{
+    class RenderWindow;
+}
 
 // Interface used to expose engine functionality to engine modules.
 class IModuleEngineAccess
 {
-    // ptodo - make private and make module the friend
 public:
     virtual bool IsSimulationActive() const = 0;
-    
-    virtual const IInspectable* GetCurrentInspected() const = 0; 
-    virtual void SetCurrentInspected(IInspectable* value_) = 0; 
+
+    virtual uint64_t GetEditorTimeMilliseconds() = 0;
+
+    virtual sf::Vector2i GetGameWindowPosition() const = 0;
+    virtual const sf::RenderWindow* GetGameWindow() const = 0;
 };

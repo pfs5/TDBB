@@ -30,6 +30,7 @@ void Application::Run(const ApplicationSetupParams& params_)
 
     EngineSetupParams params;
     params.GameWindowSize = sf::Vector2u{ params_.GameWindowSizeX, params_.GameWindowSizeY };
+    params.GameWindow = &window;
     params.StartLevel = params_.StartLevel;
     
     engine.Init(params);
@@ -55,7 +56,7 @@ void Application::Run(const ApplicationSetupParams& params_)
         ImGui::SFML::Update(window, deltaTime);
 
         engine.Update(deltaSeconds);
-
+        
         ImGui::DockSpaceOverViewport();
         
         engine.Draw();
