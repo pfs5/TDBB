@@ -11,6 +11,7 @@
 #include <SFML/System/Vector2.hpp>
 
 #include "property.h"
+#include "propertycontainer.h"
 
 class PropertyBase;
 class Class;
@@ -24,11 +25,18 @@ namespace sf
 #define IMPLEMENT_ENTITY(Type_) \
     EntityDefinition<Type_> g_##EntityDefinition##Type_;    
 
-#define ENTITY_PROPERTY(Type_, Name_, SerializationName_, DefaultValue) \
-    EntityProperty<Type_> (Name_){ _properties, SerializationName_, DefaultValue };
+#define ENTITY_PROPERTY(EntityType_, Type_, Name_, SerializationName_, DefaultValue) \
+    EntityProperty<Type_, EntityType_> (Name_){ *this, _properties, SerializationName_, DefaultValue };
+
+#define ENTITY_PROPERTY_CALLBACK(EntityType_, Type_, Name_, SerializationName_, DefaultValue, OnChangeCallback_) \
+    EntityProperty<Type_, EntityType_> (Name_){ *this, _properties, SerializationName_, DefaultValue, OnChangeCallback_ };
+
 
 // Don't implement this class directly.
-class EntityBase : public BaseObject, public IInspectable
+class EntityBase
+    : public BaseObject
+    , public IInspectable
+    , public IPropertyContainer
 {
     using Super = BaseObject;
     
@@ -48,7 +56,10 @@ public:
     // ISerializable
     virtual void Serialize(nlohmann::json& data_) const override;
     virtual bool Deserialize(const char* fileName_, const nlohmann::json& data_) override;
-    
+
+    // IPropertyContainer
+    virtual void OnPropertyChanged(PropertyBase* property_) override;
+
     void EntityCreated();
     virtual void Update(float deltaSeconds_);
     virtual void Draw(sf::RenderTarget& renderTarget_);
@@ -66,6 +77,12 @@ public:
     sf::Vector2f GetPosition() const { return _position; }
 
     sf::Vector2f GetBoundsSize() const { return _boundsSize; }
+
+#ifdef _EDITOR
+    void MarkDirty() { _isDirty = true; }
+    void ClearDirty() { _isDirty = false; }
+    bool IsDirty() const { return _isDirty; }
+#endif //_EDITOR
 
 protected:
     // Entities should create components in their constructors.
@@ -93,17 +110,21 @@ protected:
     std::string _inspectorName; // cached to avoid constant recalculation.
 
 protected:
-    void SetBoundsSize(float x_, float y_) { _boundsSize->x = x_; _boundsSize->y = y_; }
+    void SetBoundsSize(float x_, float y_) { _boundsSize = sf::Vector2f{ x_, y_ }; }
     void SetupClass(const char* typeName_);
     
 private:
     std::vector<EntityComponentBase*> _components;
     std::vector<PropertyBase*> _properties; // must be defined before all properties.
 
-    ENTITY_PROPERTY(std::string, _name, "Name", "");
-    ENTITY_PROPERTY(sf::Vector2f, _position, "Position", ZERO_VECTOR_F);
-    ENTITY_PROPERTY(sf::Vector2f, _boundsSize, "BoundsSize", ZERO_VECTOR_F);
-    ENTITY_PROPERTY(const Class*, _class, "Class", nullptr);
+    ENTITY_PROPERTY(EntityBase, std::string, _name, "Name", "");
+    ENTITY_PROPERTY(EntityBase, sf::Vector2f, _position, "Position", ZERO_VECTOR_F);
+    ENTITY_PROPERTY(EntityBase, sf::Vector2f, _boundsSize, "BoundsSize", ZERO_VECTOR_F);
+    ENTITY_PROPERTY(EntityBase, const Class*, _class, "Class", nullptr);
+
+#ifdef _EDITOR
+    bool _isDirty = false;
+#endif // _EDITOR
 };
 
 template <typename CRTP>

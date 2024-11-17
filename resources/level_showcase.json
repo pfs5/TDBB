@@ -6,22 +6,25 @@
                 "y": 80.0
             },
             "Class": "Entity_Basic",
-            "Name": "Test entity 1",
-            "Position": {
-                "x": 121.0,
-                "y": 152.0
-            },
-            "class": "Class",
-            "components": [
+            "Components": [
                 {
-                    "class": "EntityComponent_Physics",
-                    "name": "Physics",
-                    "velocity": {
+                    "Class": "EntityComponent_Physics",
+                    "Name": "Physics",
+                    "NewThingie": {
+                        "x": 0.0,
+                        "y": 0.0
+                    },
+                    "Velocity": {
                         "x": 2.0,
                         "y": 3.0
                     }
                 }
-            ]
+            ],
+            "Name": "Test entity 1",
+            "Position": {
+                "x": 121.0,
+                "y": 152.0
+            }
         },
         {
             "BoundsSize": {
@@ -29,22 +32,25 @@
                 "y": 80.0
             },
             "Class": "Entity_Basic",
-            "Name": "Test entity 2",
-            "Position": {
-                "x": 371.0,
-                "y": 203.0
-            },
-            "class": "Class",
-            "components": [
+            "Components": [
                 {
-                    "class": "EntityComponent_Physics",
-                    "name": "Physics",
-                    "velocity": {
+                    "Class": "EntityComponent_Physics",
+                    "Name": "Physics",
+                    "NewThingie": {
+                        "x": 55.0,
+                        "y": 66.0
+                    },
+                    "Velocity": {
                         "x": 5.0,
                         "y": 6.0
                     }
                 }
-            ]
+            ],
+            "Name": "Test entity 2",
+            "Position": {
+                "x": 371.0,
+                "y": 203.0
+            }
         }
     ]
 }
