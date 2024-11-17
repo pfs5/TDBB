@@ -7,6 +7,8 @@
 
 #include <SFML/System/Vector2.hpp>
 
+#include "editor/editorstyle.h"
+
 IMPLEMENT_ENTITY(BasicEntity);
 
 void EntityBase::DrawInspectable()
@@ -21,7 +23,7 @@ void EntityBase::DrawInspectable()
     ImGui::TableSetupColumn("Value", ImGuiTableColumnFlags_WidthStretch);
     ImGui::TableHeadersRow();
 
-    ImGui::TableNextRow();
+    ImGui::TableNextRow(0, EditorStyle::PropertyGridRowHeight);
     
     // ptodo - auto properties
     for (PropertyBase* property : _properties)
@@ -31,7 +33,7 @@ void EntityBase::DrawInspectable()
         ImGui::TableSetColumnIndex(1);
         property->DrawEditor();
 
-        ImGui::TableNextRow();
+        ImGui::TableNextRow(0, EditorStyle::PropertyGridRowHeight);
     }
     
     ImGui::EndTable();
@@ -60,7 +62,6 @@ void EntityBase::DrawInspectable()
 void EntityBase::Serialize(nlohmann::json& data_) const
 {
     Super::Serialize(data_);
-    data_["class"] = _class.GetName();
 
     // ptodo - auto serialization
     for (const PropertyBase* const property : _properties)
@@ -74,7 +75,7 @@ void EntityBase::Serialize(nlohmann::json& data_) const
     {
         ensure(component != nullptr);
 
-        nlohmann::json& componentData = data_["components"].emplace_back();
+        nlohmann::json& componentData = data_["Components"].emplace_back();
         component->Serialize(componentData);
     }
 }
@@ -86,20 +87,17 @@ bool EntityBase::Deserialize(const char* fileName_, const nlohmann::json& data_)
         return false;
     }
 
-    // ptodo - auto deser.
     for (PropertyBase* const property : _properties)
     {
         ensure(property != nullptr);
         property->Deserialize(data_);
     }
-
-    // ptodo - components
     
     // Components
-    for (const nlohmann::json& compJson : data_["components"])
+    for (const nlohmann::json& compJson : data_["Components"])
     {
-        const std::string compName = compJson["name"].get<std::string>();
-        const std::string compClassStr = compJson["class"].get<std::string>();
+        const std::string compName = compJson["Name"].get<std::string>();
+        const std::string compClassStr = compJson["Class"].get<std::string>();
         const Class* const compClass = ObjectRepository::FindClass(EObjectCategory::EntityComponent, compClassStr.c_str());
         ensure(compClass != nullptr);
         
@@ -108,8 +106,15 @@ bool EntityBase::Deserialize(const char* fileName_, const nlohmann::json& data_)
 
         component->Deserialize(fileName_, compJson);
     }
-    
+
     return true;
+}
+
+void EntityBase::OnPropertyChanged(PropertyBase* property_)
+{
+#ifdef _EDITOR
+    MarkDirty();
+#endif //_EDITOR
 }
 
 void EntityBase::EntityCreated()

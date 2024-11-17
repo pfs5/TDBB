@@ -19,8 +19,10 @@ public:
 
     virtual void Update(float deltaSeconds_) override;
     virtual void Draw(sf::RenderTarget& renderTarget_) override;
-    
+
+#ifdef _EDITOR
     virtual void DrawEditor() override;
+#endif //_EDITOR
 
     virtual void LoadLevel(const char* path_) override;
     virtual EntityAddedDelegate& EntityAdded() override { return _entityAdded; }

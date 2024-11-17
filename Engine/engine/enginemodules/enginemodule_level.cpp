@@ -58,6 +58,7 @@ void EngineModule_Level::Draw(sf::RenderTarget& renderTarget_)
     }
 }
 
+#ifdef _EDITOR
 void EngineModule_Level::DrawEditor()
 {
     Super::DrawEditor();
@@ -87,7 +88,12 @@ void EngineModule_Level::DrawEditor()
                 IMGUI_SCOPED_ID(entity);
 
                 bool selected = entity == currentInspected;
-                const std::string titleEntity { StringFormat("%s (%s)", entity->GetEntityName().c_str(), entity->GetTypeName().c_str()) };
+                const std::string titleEntity {
+                    StringFormat("%s (%s) %s",
+                        entity->GetEntityName().c_str(),
+                        entity->GetTypeName().c_str(),
+                        entity->IsDirty() ? "*" : ""
+                        )};
 
                 if(ImGui::Selectable(titleEntity.c_str(), &selected))
                 {
@@ -99,6 +105,7 @@ void EngineModule_Level::DrawEditor()
     
     ImGui::NewLine();
 }
+#endif //_EDITOR
 
 void EngineModule_Level::LoadLevel(const char* path_)
 {
