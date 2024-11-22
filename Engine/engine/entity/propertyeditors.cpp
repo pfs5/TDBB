@@ -52,8 +52,7 @@ void Property<sf::Vector2f>::DrawEditor()
     float inValues [] = { _value.x, _value.y };
     if(ImGui::InputFloat2(StringFormat("##%s", GetName()).c_str(), inValues, "%.2f"))
     {
-        _value.x = inValues[0];
-        _value.y = inValues[1];
+        Set(sf::Vector2f { inValues[0], inValues[1] });
     }
 }
 

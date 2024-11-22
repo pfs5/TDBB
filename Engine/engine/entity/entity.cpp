@@ -5,8 +5,6 @@
 #include "imgui/imguihelpers.h"
 #include "serialization/serialization.h"
 
-#include <SFML/System/Vector2.hpp>
-
 #include "editor/editorstyle.h"
 
 IMPLEMENT_ENTITY(BasicEntity);

@@ -126,17 +126,28 @@ void EngineModule_Level::LoadLevel(const char* path_)
     
     _currentLevel.Deserialize(filename.c_str(), data);
     _currentLevel._path = path_;
+    _currentLevel.ClearDirty();
+    
     ensure(_currentLevel.IsValid());
 }
 
-void EngineModule_Level::SaveCurrentLevel() const
+void EngineModule_Level::SaveCurrentLevel()
 {
     ensure(_currentLevel.IsValid());
 
     nlohmann::json data;
     _currentLevel.Serialize(data);
 
+#ifdef _EDITOR
+    _currentLevel.ClearDirty(Level::PropagateToEntities{ true });
+#endif //_EDITOR
+    
     Serialization::SaveJsonToFile(_currentLevel.GetPath().c_str(), data);
+}
+
+bool EngineModule_Level::IsCurrentLevelDirty() const
+{
+    return _currentLevel.IsDirty();
 }
 
 void EngineModule_Level::OnEntityAddedToCurrentLevel(EntityBase& entity_)

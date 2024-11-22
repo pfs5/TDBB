@@ -28,7 +28,8 @@ public:
     virtual EntityAddedDelegate& EntityAdded() override { return _entityAdded; }
     virtual CurrentLevelChangedDelegate& CurrentLevelChanged() override { return _currentLevelChanged; }
     
-    void SaveCurrentLevel() const;
+    void SaveCurrentLevel();
+    bool IsCurrentLevelDirty() const;
 
 private:
     // There's a level loaded at any time. The default is an empty level.

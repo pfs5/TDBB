@@ -68,7 +68,7 @@ public:
     bool operator==(const Property& other_) const { return _value == other_._value; }
     bool operator!=(const Property& other_) const { return !operator==(other_); }
 
-    Property& operator=(const Type& value_) { _value = value_; return *this; }
+    Property& operator=(const Type& value_) { Set(value_); return *this; }
     operator const Type&() const { return _value; }
     operator Type&() { return _value; }
     

@@ -112,10 +112,13 @@ void Engine::Draw()
 
         // 3 - Load/Save
         ImGui::TableSetColumnIndex(2);
+        const bool saveButtonDisabled = !_engineModuleLevel.IsCurrentLevelDirty();
+        ImGui::BeginDisabled(saveButtonDisabled);
         if (ImGui::Button("Save", ImVec2{80.f, 0.f}))
         {
             Save();
         }
+        ImGui::EndDisabled();
 
         ImGui::EndTable();
     }

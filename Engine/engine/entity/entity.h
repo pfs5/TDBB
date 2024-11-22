@@ -1,17 +1,17 @@
 ﻿#pragma once
 
 #include "engine/inspectable.h"
+#include "engine/object/baseobject.h"
 #include "entitycomponentaccess.h"
 #include "errorhandling/assert.h"
+#include "events/delegate.h"
 #include "math/vector.h"
-#include "util/stringutil.h"
-#include "util/typeid.h"
-#include "engine/object/baseobject.h"
-
-#include <SFML/System/Vector2.hpp>
-
 #include "property.h"
 #include "propertycontainer.h"
+#include "util/stringutil.h"
+#include "util/typeid.h"
+
+#include <SFML/System/Vector2.hpp>
 
 class PropertyBase;
 class Class;
@@ -39,6 +39,11 @@ class EntityBase
     , public IPropertyContainer
 {
     using Super = BaseObject;
+
+public:
+#ifdef _EDITOR
+    using OnDirtyChanged = Delegate<EntityBase& /*targetEntity_*/>;
+#endif //_EDITOR
     
 public:
     EntityBase() = default;
@@ -79,9 +84,11 @@ public:
     sf::Vector2f GetBoundsSize() const { return _boundsSize; }
 
 #ifdef _EDITOR
-    void MarkDirty() { _isDirty = true; }
+    void MarkDirty() { _isDirty = true; _onDirtyChanged.Broadcast(*this); }
     void ClearDirty() { _isDirty = false; }
     bool IsDirty() const { return _isDirty; }
+
+    OnDirtyChanged::NonOwnedType& GetOnDirtyChangedListener() { return _onDirtyChanged; }
 #endif //_EDITOR
 
 protected:
@@ -123,6 +130,7 @@ private:
     ENTITY_PROPERTY(EntityBase, const Class*, _class, "Class", nullptr);
 
 #ifdef _EDITOR
+    OnDirtyChanged _onDirtyChanged;
     bool _isDirty = false;
 #endif // _EDITOR
 };
