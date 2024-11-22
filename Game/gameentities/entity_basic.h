@@ -7,6 +7,15 @@
 class EntityComponent_Test : public EntityComponent<EntityComponent_Test>
 {
     using Super = EntityComponent<EntityComponent_Test>;
+
+public:
+    // ptodo - testing inputs
+    virtual void SetupInputs() override;
+
+private:
+    void Input_Turn();
+    void Input_Up(float axisValue_);
+    void Input_Right(float axisValue_);
 };
 
 class Entity_Basic : public Entity<Entity_Basic>

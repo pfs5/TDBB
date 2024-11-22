@@ -33,6 +33,9 @@ class EntityComponentBase
     
 public:
     virtual ~EntityComponentBase() = default;
+
+    // Derived class interface
+    virtual void SetupInputs() {}
     
     virtual std::string GetTypeName() const = 0;
 
