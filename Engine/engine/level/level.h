@@ -3,6 +3,7 @@
 #include "events/delegate.h"
 #include "serialization/serializable.h"
 #include "thirdparty/json_fwd.h"
+#include "util/namedbool.h"
 
 class EntityBase;
 
@@ -33,13 +34,32 @@ public:
 
     // IHasEditor
     virtual void DrawEditor() override;
+
+#ifdef _EDITOR
+    void MarkDirty() { _isDirty = true; }
+
+    using PropagateToEntities = NamedBool<class PropagateToEntitiesTag>;
+    void ClearDirty(PropagateToEntities propagateToEntities_ = PropagateToEntities{ false });
+    
+    bool IsDirty() const { return _isDirty; }
+#endif //_EDITOR
     
 private:
-    bool _isValid = true;
-
     std::string _name;
     std::string _path;
     std::vector<EntityBase*> _entities; // ptodo - handles instead of raw pointers
 
     OnEntityAddedDelegate _onEntityAdded;
+    
+    bool _isValid = true;
+    
+#ifdef _EDITOR
+    bool _isDirty = false;
+#endif // _EDITOR
+
+private:
+#ifdef _EDITOR
+    void OnEntityDirtyChanged(EntityBase& entity_);
+#endif // _EDITOR
+
 };

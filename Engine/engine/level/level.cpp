@@ -54,7 +54,12 @@ bool Level::Deserialize(const char* fileName_, const nlohmann::json& data_)
         // ptodo setup entity
         
         entity->EntityCreated();
-        
+        entity->ClearDirty();
+
+#ifdef _EDITOR
+        entity->GetOnDirtyChangedListener().AddListener(this, &Level::OnEntityDirtyChanged);
+#endif // _EDITOR
+
         _entities.emplace_back(entity);
 
         _onEntityAdded.Broadcast(*entity);
@@ -71,3 +76,28 @@ void Level::DrawEditor()
 
     // ptodo
 }
+
+#ifdef _EDITOR
+void Level::ClearDirty(PropagateToEntities propagateToEntities_/* = false*/)
+{
+    _isDirty = false;
+
+    if (propagateToEntities_)
+    {
+        for (EntityBase* entity : _entities)
+        {
+            entity->ClearDirty();
+        }
+    }
+}
+#endif // _EDITOR
+
+#ifdef _EDITOR
+void Level::OnEntityDirtyChanged(EntityBase& entity_)
+{
+    if (entity_.IsDirty())
+    {
+        MarkDirty();
+    }
+}
+#endif // _EDITOR
