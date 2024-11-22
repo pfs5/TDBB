@@ -63,7 +63,10 @@ void EntityComponentBase::OnPropertyChanged(PropertyBase* property_)
 #ifdef _EDITOR
 void EntityComponentBase::MarkDirty()
 {
-    _owner->MarkDirty();
+    if (_owner != nullptr)
+    {
+        _owner->MarkDirty();
+    }
 }
 #endif //_EDITOR
 
