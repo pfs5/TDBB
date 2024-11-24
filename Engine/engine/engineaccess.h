@@ -75,6 +75,7 @@ struct EngineLogAccess : public Proxy<IEngineLogAccess>
     EngineLogAccess();
 };
 
+// Inputs
 class IEngineInputsAccess
 {
 public:
@@ -87,4 +88,34 @@ public:
 struct EngineInputsAccess : public Proxy<IEngineInputsAccess>
 {
     EngineInputsAccess();
+};
+
+// Settings
+class IEngineSettingsAccess
+{
+public:
+    struct RenderSettings
+    {
+        int AntialiasingLevel = 8;
+    };
+
+    virtual const RenderSettings& GetRenderSettings() const = 0;
+};
+
+struct EngineSettingsAccess : public Proxy<IEngineSettingsAccess>
+{
+    EngineSettingsAccess();
+};
+
+// Debug
+class IEngineDebugAccess
+{
+public:
+    virtual void DrawDebugLine(sf::Vector2f start_, sf::Vector2f end_, float durationSeconds_ = 0.f) = 0;
+    virtual void DrawDebugPoint(sf::Vector2f position_, float radius_, float durationSeconds_ = 0.f) = 0;
+};
+
+struct EngineDebugAccess : public Proxy<IEngineDebugAccess>
+{
+    EngineDebugAccess();
 };

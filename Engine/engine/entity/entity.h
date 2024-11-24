@@ -13,6 +13,7 @@
 
 #include <SFML/System/Vector2.hpp>
 
+class Transform;
 class PropertyBase;
 class Class;
 class EntityComponentBase;
@@ -75,14 +76,15 @@ public:
     
     // ptodo - move to private engine access
     void SetEntityName(const char* name_) { _name = name_; }
-
     const std::string& GetEntityName() const { return _name; }
-
     void SetPosition(sf::Vector2f value_) { _position = value_; }
     sf::Vector2f GetPosition() const { return _position; }
-
+    float GetRotationDeg() const { return _rotationDeg; }
+    void SetRotationDeg(float value_) { _rotationDeg = value_; }
     sf::Vector2f GetBoundsSize() const { return _boundsSize; }
 
+    Transform GetEntityTransform() const;
+    
 #ifdef _EDITOR
     void MarkDirty() { _isDirty = true; _onDirtyChanged.Broadcast(*this); }
     void ClearDirty() { _isDirty = false; }
@@ -126,6 +128,7 @@ private:
 
     ENTITY_PROPERTY(EntityBase, std::string, _name, "Name", "");
     ENTITY_PROPERTY(EntityBase, sf::Vector2f, _position, "Position", ZERO_VECTOR_F);
+    ENTITY_PROPERTY(EntityBase, float, _rotationDeg, "Rotation (Deg.)", 0.f);
     ENTITY_PROPERTY(EntityBase, sf::Vector2f, _boundsSize, "BoundsSize", ZERO_VECTOR_F);
     ENTITY_PROPERTY(EntityBase, const Class*, _class, "Class", nullptr);
 

@@ -6,6 +6,7 @@
 #include "serialization/serialization.h"
 
 #include "editor/editorstyle.h"
+#include "math/transform.h"
 
 IMPLEMENT_ENTITY(BasicEntity);
 
@@ -26,10 +27,12 @@ void EntityBase::DrawInspectable()
     // ptodo - auto properties
     for (PropertyBase* property : _properties)
     {
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Text(property->GetName());
         ImGui::TableSetColumnIndex(1);
         property->DrawEditor();
+        
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text(property->GetName());
+
 
         ImGui::TableNextRow(0, EditorStyle::PropertyGridRowHeight);
     }
@@ -160,6 +163,11 @@ EntityComponentBase* EntityBase::FindComponent(const Class& class_, const char* 
             });
 
     return it != _components.end() ? *it : nullptr;  
+}
+
+Transform EntityBase::GetEntityTransform() const
+{
+    return Transform { GetPosition(), GetRotationDeg() };
 }
 
 void EntityBase::SetupClass(const char* typeName_)

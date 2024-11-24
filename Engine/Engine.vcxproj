@@ -96,9 +96,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="application.cpp" />
+    <ClCompile Include="debug\debugdraw.cpp" />
     <ClCompile Include="engine\editormodules\editormodule_leveleditor.cpp" />
     <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="engine\engineaccess.cpp" />
+    <ClCompile Include="engine\enginemodules\enginemodule_debug.cpp" />
+    <ClCompile Include="engine\enginemodules\enginemodule_editor.cpp" />
     <ClCompile Include="engine\enginemodules\enginemodule_inputs.cpp" />
     <ClCompile Include="engine\enginemodules\enginemodule_entity.cpp" />
     <ClCompile Include="engine\enginemodules\enginemodule_level.cpp" />
@@ -111,7 +114,10 @@
     <ClCompile Include="engine\level\level.cpp" />
     <ClCompile Include="engine\object\baseobject.cpp" />
     <ClCompile Include="imgui\imguihelpers.cpp" />
+    <ClCompile Include="math\transform.cpp" />
+    <ClCompile Include="math\vector.cpp" />
     <ClCompile Include="platform\imgui-SFML.cpp" />
+    <ClCompile Include="rendering\shapeutils.cpp" />
     <ClCompile Include="serialization\serialization.cpp" />
     <ClCompile Include="serialization\valueserialization_impl.cpp" />
     <ClCompile Include="util\color.cpp" />
@@ -124,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="application.h" />
+    <ClInclude Include="debug\debugdraw.h" />
     <ClInclude Include="editor\editorstyle.h" />
     <ClInclude Include="editor\haseditor.h" />
     <ClInclude Include="engine\editorengineaccess.h" />
@@ -132,6 +139,8 @@
     <ClInclude Include="engine\engine.h" />
     <ClInclude Include="engine\engineaccess.h" />
     <ClInclude Include="engine\enginemodule.h" />
+    <ClInclude Include="engine\enginemodules\enginemodule_debug.h" />
+    <ClInclude Include="engine\enginemodules\enginemodule_editor.h" />
     <ClInclude Include="engine\enginemodules\enginemodule_inputs.h" />
     <ClInclude Include="engine\enginemodules\enginemodule_entity.h" />
     <ClInclude Include="engine\enginemodules\enginemodule_level.h" />
@@ -153,13 +162,16 @@
     <ClInclude Include="errorhandling\assert.h" />
     <ClInclude Include="events\delegate.h" />
     <ClInclude Include="imgui\imguihelpers.h" />
-    <ClInclude Include="math\bounds.h" />
+    <ClInclude Include="math\box.h" />
+    <ClInclude Include="math\mathutils.h" />
     <ClInclude Include="math\random.h" />
+    <ClInclude Include="math\transform.h" />
     <ClInclude Include="math\vector.h" />
     <ClInclude Include="platform\imgui-SFML.h" />
     <ClInclude Include="platform\imgui-SFML_export.h" />
     <ClInclude Include="platform\platformsetup.h" />
     <ClInclude Include="rendering\colors.h" />
+    <ClInclude Include="rendering\shapeutils.h" />
     <ClInclude Include="serialization\archive.h" />
     <ClInclude Include="serialization\serializable.h" />
     <ClInclude Include="serialization\serialization.h" />
@@ -167,6 +179,7 @@
     <ClInclude Include="serialization\valueserialization_impl.h" />
     <ClInclude Include="thirdparty\json.h" />
     <ClInclude Include="thirdparty\json_fwd.h" />
+    <ClInclude Include="util\arrayutils.h" />
     <ClInclude Include="util\color.h" />
     <ClInclude Include="util\enumutil.h" />
     <ClInclude Include="util\hash.h" />

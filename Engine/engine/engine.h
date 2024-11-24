@@ -12,6 +12,8 @@
 #include <SFML/Graphics/RenderTexture.hpp>
 
 #include "editorengineaccess.h"
+#include "enginemodules/enginemodule_debug.h"
+#include "enginemodules/enginemodule_editor.h"
 
 class EditorModuleBase;
 class Level;
@@ -61,7 +63,8 @@ public:
     virtual const IInspectable* GetCurrentInspected() const final { return _currentInspectable; } 
     virtual void SetCurrentInspected(IInspectable* value_) final { _currentInspectable = value_; _currentInspectableChanged.Broadcast(value_); }
     virtual CurrentInspectableChangedDelegate& CurrentInspectableChanged() final { return _currentInspectableChanged; }
-
+    virtual sf::Vector2u GetGameWindowSize() const final { return _setupParams.GameWindowSize; }
+    
 // ptodo - move simulation logic into module
     
 private:
@@ -88,6 +91,8 @@ private:
     ENGINE_MODULE(EngineModule_Entity, _engineModuleEntity);
     ENGINE_MODULE(EngineModule_Inputs, _engineModuleInputs);
     ENGINE_MODULE(EngineModule_Logger, _engineModuleLogger);
+    ENGINE_MODULE(EngineModule_Editor, _engineModuleEditor);
+    ENGINE_MODULE(EngineModule_Debug, _engineModuleDebug);
     // END Engine modules
 
     // BEGIN Editor modules

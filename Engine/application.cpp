@@ -12,7 +12,7 @@
 void Application::Run(const ApplicationSetupParams& params_)
 {
     sf::ContextSettings windowSettings;
-    windowSettings.antialiasingLevel = 8;
+    // windowSettings.antialiasingLevel = 4;
     sf::RenderWindow window(sf::VideoMode({params_.GameWindowSizeX, params_.GameWindowSizeY}),
         "TDBB",
         sf::Style::Default,

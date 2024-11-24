@@ -2,7 +2,7 @@
     "entities": [
         {
             "BoundsSize": {
-                "x": 50.0,
+                "x": 80.0,
                 "y": 80.0
             },
             "Class": "Entity_Basic",
@@ -22,9 +22,10 @@
             ],
             "Name": "Test entity 1",
             "Position": {
-                "x": 412.0,
-                "y": 152.0
-            }
+                "x": 1102.0933837890625,
+                "y": 621.6845092773438
+            },
+            "Rotation (Deg.)": 5.0
         },
         {
             "BoundsSize": {
@@ -50,7 +51,8 @@
             "Position": {
                 "x": 506.0,
                 "y": 192.0
-            }
+            },
+            "Rotation (Deg.)": 0.0
         }
     ]
 }
