@@ -1,5 +1,7 @@
 ﻿#include "vector.h"
 
+#include <algorithm>
+
 sf::Vector2f Math::RotateVector(sf::Vector2f vector_, float angleRadians_)
 {
     // Standard linear transformation
@@ -23,8 +25,11 @@ float Math::VectorAngleDeg(sf::Vector2f a_, sf::Vector2f b_)
     {
         return 0.f;        
     }
-    
-    return RadianToDegree(std::acos(VectorDot(a_, b_) / (aSize * bSize))) * Sign(VectorCross(a_, b_));
+
+    const float dot = VectorDot(a_, b_);
+    const float dotNormalized = std::clamp(dot / (aSize * bSize), -1.f, 1.f);
+
+    return RadianToDegree(std::acos(dotNormalized)) * Sign(VectorCross(a_, b_));
 }
 
 sf::Vector2f Math::ProjectPointOntoLine(sf::Vector2f point_, sf::Vector2f lineStart_, sf::Vector2f lineDirection_)
