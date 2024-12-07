@@ -69,7 +69,7 @@ struct IterableEnum
         __VA_ARGS__,                                    \
         Count                                           \
     };                                                  \
-    constexpr const char* ToString(name_ value_) {     \
+    constexpr const char* ToString(name_ value_) {      \
         using enum name_;                               \
         switch (value_) {                               \
             FOR_EACH(ENUM_CASE, __VA_ARGS__)            \

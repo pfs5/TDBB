@@ -97,6 +97,7 @@
   <ItemGroup>
     <ClCompile Include="application.cpp" />
     <ClCompile Include="debug\debugdraw.cpp" />
+    <ClCompile Include="editor\manipulators\entitymanipulator.cpp" />
     <ClCompile Include="engine\editormodules\editormodule_leveleditor.cpp" />
     <ClCompile Include="engine\engine.cpp" />
     <ClCompile Include="engine\engineaccess.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="debug\debugdraw.h" />
     <ClInclude Include="editor\editorstyle.h" />
     <ClInclude Include="editor\haseditor.h" />
+    <ClInclude Include="editor\manipulators\entitymanipulator.h" />
     <ClInclude Include="engine\editorengineaccess.h" />
     <ClInclude Include="engine\editormodule.h" />
     <ClInclude Include="engine\editormodules\editormodule_leveleditor.h" />
