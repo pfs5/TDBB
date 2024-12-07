@@ -228,16 +228,48 @@ void Engine::Draw()
         // Render target for game draw
         static ImVec2 viewportSize { static_cast<float>(_setupParams.GameWindowSize.x), static_cast<float>(_setupParams.GameWindowSize.y) }; // ptodo - game size
         sf::ContextSettings windowSettings;
-        windowSettings.antialiasingLevel = 1;
+        windowSettings.antialiasingLevel = EngineSettingsAccess::Get().GetRenderSettings().AntialiasingLevel;
+        
         // ptodo - should we call create every time? can something be cached?
-        _gameRenderTexture.create(static_cast<unsigned int>(viewportSize.x), static_cast<unsigned int>(viewportSize.y));
+        _gameRenderTexture.create(static_cast<unsigned int>(viewportSize.x), static_cast<unsigned int>(viewportSize.y), windowSettings);
         _gameRenderTexture.setSmooth(true);
         _gameRenderTexture.clear(sf::Color::Black);
 
         DrawGame();
 
+        _gameRenderTexture.display();
+
         viewportSize = ImGui::GetWindowSize();
 
+        // Viewport menu bar
+        ImGui::BeginTable("##ViewportMenuBar", 2, ImGuiTableFlags_Borders);
+
+        ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthFixed, 100.f);
+        ImGui::TableSetupColumn("", ImGuiTableColumnFlags_WidthStretch);
+        ImGui::TableNextRow();
+
+        ImGui::TableSetColumnIndex(1);
+        ImGui::BeginDisabled(_engineModuleLevelEditor.GetCurrentManipulationMode() == EditorModule_LevelEditor::EManipulationMode::Position);
+        if(ImGui::Button("pos."))
+        {
+            _engineModuleLevelEditor.SetCurrentManipulationMode(EditorModule_LevelEditor::EManipulationMode::Position);
+        }
+        ImGui::EndDisabled();
+        
+        ImGui::SameLine();
+        ImGui::BeginDisabled(_engineModuleLevelEditor.GetCurrentManipulationMode() == EditorModule_LevelEditor::EManipulationMode::Rotation);
+        if(ImGui::Button("rot."))
+        {
+            _engineModuleLevelEditor.SetCurrentManipulationMode(EditorModule_LevelEditor::EManipulationMode::Rotation);
+        }
+        ImGui::EndDisabled();
+        
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("manipulator: ");
+        ImGui::SameLine();
+
+        ImGui::EndTable();
+        
         const ImVec2 gameRenderTexturePos = ImGui::GetCursorPos();
         ImGui::Image(_gameRenderTexture);
 

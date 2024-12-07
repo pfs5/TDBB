@@ -17,9 +17,17 @@ void Entity_Basic::Draw(sf::RenderTarget& renderTarget_)
     Super::Draw(renderTarget_);
 
     // ptodo - testing
-    sf::RectangleShape shape { sf::Vector2f{20.f, 20.f} };
-    shape.setFillColor(sf::Color::Yellow);
-    shape.setOrigin(sf::Vector2f{ 10.f, 10.f });
-    shape.setPosition(GetPosition());
-    renderTarget_.draw(shape);
+    sf::RectangleShape shapeBase { sf::Vector2f{ 50.f, 50.f } };
+    shapeBase.setFillColor(sf::Color::Yellow);
+    shapeBase.setOrigin(sf::Vector2f{ 25.f, 25.f });
+    shapeBase.setRotation(GetRotationDeg());
+    shapeBase.setPosition(GetPosition());
+    renderTarget_.draw(shapeBase);
+
+    sf::RectangleShape shapeBottom { sf::Vector2f{ 50.f, 10.f } };
+    shapeBottom.setFillColor(sf::Color::Red);
+    shapeBottom.setOrigin(sf::Vector2f{ 25.f, -25.f });
+    shapeBottom.setRotation(GetRotationDeg());
+    shapeBottom.setPosition(GetPosition());
+    renderTarget_.draw(shapeBottom);
 }

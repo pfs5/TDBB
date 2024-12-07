@@ -9,7 +9,7 @@ template<> \
 void Property<type_>::DrawEditor() \
 { \
     int value = static_cast<int>(_value); \
-    if (ImGui::InputInt(StringFormat("##%s", GetName()).c_str(), &value)) \
+    if (ImGui::InputInt(StringFormat("##%s", GetName()).c_str(), &value, 1, 100, ImGuiInputTextFlags_EnterReturnsTrue)) \
     { \
         _value = static_cast<type_>(value); \
     } \
@@ -40,8 +40,10 @@ IMPLEMENT_EDITOR_INTEGRAL_TYPE(int64_t);
 template<>
 void Property<float>::DrawEditor()
 {
-    if (ImGui::InputFloat(StringFormat("##%s", GetName()).c_str(), &_value, 0, 0, "%.2f"))
+    float inValue = _value;
+    if (ImGui::InputFloat(StringFormat("##%s", GetName()).c_str(), &inValue, 0, 0, "%.2f", ImGuiInputTextFlags_EnterReturnsTrue))
     {
+        Set(inValue);
     }
 }
 
@@ -50,7 +52,7 @@ template<>
 void Property<sf::Vector2f>::DrawEditor()
 {
     float inValues [] = { _value.x, _value.y };
-    if(ImGui::InputFloat2(StringFormat("##%s", GetName()).c_str(), inValues, "%.2f"))
+    if(ImGui::InputFloat2(StringFormat("##%s", GetName()).c_str(), inValues, "%.2f", ImGuiInputTextFlags_EnterReturnsTrue))
     {
         Set(sf::Vector2f { inValues[0], inValues[1] });
     }
@@ -74,7 +76,7 @@ void Property<const Class*>::DrawEditor()
 {
     if (_value != nullptr)
     {
-        ImGui::Text("%s (#%d)", _value->GetName().c_str(), _value->GetNameHash());        
+        ImGui::Text("%s (#%lld)", _value->GetName().c_str(), _value->GetNameHash());        
     }
     else
     {

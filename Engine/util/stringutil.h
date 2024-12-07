@@ -53,25 +53,25 @@ struct RotatingStringBuffer
 };
 
 template<typename ... Args>
-std::string StringFormat(const char* format, Args... args)
+std::string StringFormat(const char* format_, Args... args_)
 {
     static RotatingStringBuffer buffer;
 
-    const int size_s = std::snprintf(nullptr, 0, format, args ...) + 1; // Extra space for '\0'
+    const int size_s = std::snprintf(nullptr, 0, format_, args_ ...) + 1; // Extra space for '\0'
     const size_t size = static_cast<size_t>(size_s);
 
     char* bufferSlot = buffer.GetSlot(size);
-    std::snprintf(bufferSlot, size, format, args ...);
+    std::snprintf(bufferSlot, size, format_, args_ ...);
     return { bufferSlot, bufferSlot + size - 1 }; // We don't want the '\0' inside
 }
 
-inline std::string ToString(bool value)
+inline std::string ToString(bool value_)
 {
-    return value ? "true" : "false";
+    return value_ ? "true" : "false";
 }
 
 template<typename T>
-std::string ToString(const T& value)
+std::string ToString(const T& value_)
 {
     return "Please define a ToString specialization";
 }

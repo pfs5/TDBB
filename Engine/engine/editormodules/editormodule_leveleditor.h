@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "engine/editormodule.h"
-#include "math/bounds.h"
+#include "math/box.h"
 #include "math/vector.h"
 #include "util/enumutil.h"
 
@@ -17,6 +17,14 @@ class EditorModule_LevelEditor : public EditorModule<EditorModule_LevelEditor>
     using Super = EditorModule<EditorModule_LevelEditor>;
 
 public:
+    MAKE_ENUM(EManipulationMode, uint8_t,
+        None,
+
+        Position,
+        Rotation
+    );
+    
+public:
     using Super::Super;
 
     virtual void Startup() override;
@@ -26,33 +34,45 @@ public:
     virtual void Draw(sf::RenderTarget& renderTarget_) final;
     virtual void DrawEditor() final;
 
+    EManipulationMode GetCurrentManipulationMode() const { return _currentManipulationMode; }
+    void SetCurrentManipulationMode(EManipulationMode value_) { _currentManipulationMode = value_; }
+    
 private:
     MAKE_ENUM(EManipulationType, uint8_t,
         None,
         
         MoveRight,
         MoveUp,
-        FreeMove
+        FreeMove,
+
+        Rotate
     );
     
     struct EntityManipulator
     {
-        EntityManipulator(EntityBase& entity_):
-            EntityRef{ &entity_ }
+        EntityManipulator(EntityBase& entity_, EditorModule_LevelEditor& parentEditor_):
+            EntityRef{ &entity_ },
+            ParentModule{ &parentEditor_ }
         {
             
         }
         // ptodo - this should be a handle
         EntityBase* EntityRef;
 
+        // ptodo - solve this without having a ref to the parent
+        EditorModule_LevelEditor* ParentModule;
+        
         EManipulationType CurrentManipulation = EManipulationType::None;
-        sf::Vector2f ManipulationPositionOffset = ZERO_VECTOR_F;
+        sf::Vector2f ManipulationPositionOffset = ZERO_VECTOR_F;    // Mouse-to-entity offset on manipulation start.
+        sf::Vector2f BaseEntityPosition = ZERO_VECTOR_F;            // Entity position on manipulation start.
+        float BaseEntityRotationDeg = 0.f;                             // Entity rotation on manipulation start.
         
         bool IsSelected = false;
         bool IsHovered = false;
         bool MoveRightHovered = false;
         bool MoveUpHovered = false;
         bool FreeMoveHovered = false;
+        bool RotateHovered = false;
         
         void Draw(sf::RenderTarget& renderTarget_);
         void StartManipulation(EManipulationType type_, sf::Vector2f mousePosition_);
@@ -60,14 +80,18 @@ private:
         bool IsManipulating() const { return CurrentManipulation != EManipulationType::None; }
         void UpdateManipulation(sf::Vector2f mousePosition_);
         
-        Bounds GetBounds() const;
-        Bounds GetMoveRightBounds() const;
-        Bounds GetMoveUpBounds() const;
-        Bounds GetFreeMoveBounds() const;
+        BoxCircleBounds GetBounds() const;
+        BoxCircleBounds GetMoveRightBounds() const;
+        BoxCircleBounds GetMoveUpBounds() const;
+        BoxCircleBounds GetFreeMoveBounds() const;
+        BoxCircleBounds GetRotateBounds() const;
+        
     };
 
 private:
     std::vector<EntityManipulator> _manipulators;
+
+    EManipulationMode _currentManipulationMode = EManipulationMode::Position;
     
 private:
     void OnCurrentLevelChanged();
