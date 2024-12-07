@@ -13,9 +13,6 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include "debug/debugdraw.h"
-#include "engine/engineutils/log.h"
-
 // ptodo - a lot of switch/cases here; fix this
 
 // EntityManipulator
@@ -33,7 +30,7 @@ void EditorModule_LevelEditor::EntityManipulator::Draw(sf::RenderTarget& renderT
         case EManipulationType::MoveRight:
         {
             // ptodo
-            sf::RectangleShape lineRight { sf::Vector2f{ 4000.f, EditorStyle::LineThickness } };
+            sf::RectangleShape lineRight { sf::Vector2f{ 4000.f, EditorStyle::ThinLineThickness } };
             lineRight.setOrigin(lineRight.getSize() * 0.5f);
             lineRight.setOutlineColor(sf::Color::Transparent);
             lineRight.setFillColor(sf::Color{ 255, 255, 255, 150 });
@@ -46,7 +43,7 @@ void EditorModule_LevelEditor::EntityManipulator::Draw(sf::RenderTarget& renderT
         case EManipulationType::MoveUp:
         {
             // ptodo
-            sf::RectangleShape lineUp { sf::Vector2f{ EditorStyle::LineThickness, 4000.f } };
+            sf::RectangleShape lineUp { sf::Vector2f{ EditorStyle::ThinLineThickness, 4000.f } };
             lineUp.setOrigin(lineUp.getSize() * 0.5f);
             lineUp.setOutlineColor(sf::Color::Transparent);
             lineUp.setFillColor(sf::Color{ 255, 255, 255, 150 });
@@ -127,9 +124,9 @@ void EditorModule_LevelEditor::EntityManipulator::Draw(sf::RenderTarget& renderT
 
             case EManipulationMode::Rotation:
             {
-                sf::CircleShape shape { 20.f - EditorStyle::LineThickness };
+                sf::CircleShape shape { 30.f - EditorStyle::ThinLineThickness };
                 shape.setOrigin(sf::Vector2f{ shape.getRadius(), shape.getRadius() });
-                shape.setOutlineThickness(EditorStyle::LineThickness);
+                shape.setOutlineThickness(EditorStyle::ThinLineThickness);
                 shape.setFillColor(sf::Color::Transparent);
                 shape.setOutlineColor(RotateHovered ? Color::Red : Color::DarkRed);
                 shape.setPosition(position);
@@ -196,14 +193,14 @@ void EditorModule_LevelEditor::EntityManipulator::UpdateManipulation(sf::Vector2
             EntityRef->SetPosition(mousePosition_);
             break;
         }
-    case EManipulationType::Rotate:
-            {
-                const sf::Vector2f targetVector = mousePosition_ - EntityRef->GetPosition();
-                const float angleDeltaDeg = Math::VectorAngleDeg(ManipulationPositionOffset, targetVector);
-                EntityRef->SetRotationDeg(BaseEntityRotationDeg + angleDeltaDeg);
-                
-                break;
-            }
+        case EManipulationType::Rotate:
+        {
+            const sf::Vector2f targetVector = mousePosition_ - EntityRef->GetPosition() + ManipulationPositionOffset;
+            const float angleDeltaDeg = Math::VectorAngleDeg(ManipulationPositionOffset, targetVector);
+            EntityRef->SetRotationDeg(BaseEntityRotationDeg + angleDeltaDeg);
+
+            break;
+        }
     }
 }
 
@@ -244,7 +241,7 @@ BoxCircleBounds EditorModule_LevelEditor::EntityManipulator::GetFreeMoveBounds()
 
 BoxCircleBounds EditorModule_LevelEditor::EntityManipulator::GetRotateBounds() const
 {
-    static const float RADIUS { 20.f };
+    static const float RADIUS { 30.f };
 
     return BoxCircleBounds::MakeCircle(EntityRef->GetPosition(), RADIUS);
 }
